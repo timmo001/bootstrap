@@ -5,6 +5,7 @@
     - [x] Install go
     - [ ] Build and run the go program
 - [ ] Write a go program to fully bootstrap
+    - [ ] Update apt
     - [ ] Setup AWS, SSO auth and assign AWS_PROFILE
     - [ ] Setup NodeJS and pnpm with corepack
     - [ ] Setup Docker
@@ -27,5 +28,12 @@
     - [ ] Install steam-installer from package
     - [ ] Install discord from package
     - [ ] Install slack from package
-    - [ ]  
+    - [ ] Install sunshine and setup systemd service
+    - [ ] Install moonlight client
+    - [ ] Install postman
+    - [ ] Install bruno
+    - [ ] Setup HDR
+    - [ ] Install nerdfonts
+    - [ ] Install nerdicons
+    - [ ] Check for and install GoXLR-Utility
 - [ ] Write a README.md
