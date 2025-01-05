@@ -620,12 +620,10 @@ func main() {
 		if err := updateOrCloneRepo("https://github.com/ghostty-org/ghostty", "ghostty"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
-		if err := runCmdInDir("ghostty", "zig", "build", "-p", home+"/.local", "-Doptimize=ReleaseFast"); err != nil {
+		if err := runCmdInDir("ghostty", "sudo", "zig", "build", "-p", "/usr", "-Doptimize=ReleaseFast"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 		installedPackages = append(installedPackages, "ghostty")
-
-
 
 	}
 
