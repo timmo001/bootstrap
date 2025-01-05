@@ -1,42 +1,42 @@
 # TODO
 
 - Install go and run with script - `init.sh`
-    - [x] Get shell
-    - [x] Install go
-    - [x] Build and run the go program
+  - [x] Get shell
+  - [x] Install go
+  - [x] Build and run the go program
 - Write a go program to fully bootstrap
-    - [x] Update apt
-    - [x] Setup zsh
-    - [x] Setup oh-my-zsh and .zshrc
-    - [x] Setup NodeJS and pnpm with corepack
-    - [x] Setup python
-    - [x] Setup rust
-    - [x] Setup zig
-    - [x] Setup ruby
-    - [x] Setup Docker
-    - [x] Setup brew on linux
-    - [x] Setup nvim
-        - [x] Install from source
-        - [x] Clone timmo001/nvim-config to ~/.config/nvim
-    - [x] Install ripgrep
-    - [x] Install fzf
-    - [x] Install lynx
-    - [x] Install lazygit
-    - [ ] Setup AWS, SSO auth and assign AWS_PROFILE
-    - [ ] Install ghostty from source
-    - [x] Install vs*ode from package
-    - [x] Install zen browser
-    - [ ] Install chrome browser from package
-    - [ ] Install steam-installer from package
-    - [ ] Install discord from package
-    - [ ] Install slack from package
-    - [ ] Install sunshine and setup systemd service
-    - [ ] Install moonlight client
-    - [ ] Install postman
-    - [ ] Install bruno
-    - [ ] Setup HDR
-    - [ ] Install nerdfonts
-    - [ ] Install nerdicons
-    - [ ] Check for and install GoXLR-Utility
-    - [ ] Setup git config
+  - [x] Update apt
+  - [x] Setup zsh
+  - [x] Setup oh-my-zsh and .zshrc
+  - [x] Setup NodeJS and pnpm with corepack
+  - [x] Setup python
+  - [x] Setup rust
+  - [x] Setup zig
+  - [x] Setup ruby
+  - [x] Setup Docker
+  - [x] Setup brew on linux
+  - [x] Setup nvim
+    - [x] Install from source
+    - [x] Clone timmo001/nvim-config to ~/.config/nvim
+  - [x] Install ripgrep
+  - [x] Install fzf
+  - [x] Install lynx
+  - [x] Install lazygit
+  - [ ] Setup AWS, SSO auth and assign AWS_PROFILE
+  - [ ] Install ghostty from source
+  - [x] Install vs*ode from package
+  - [x] Install zen browser
+  - [ ] Install chrome browser from package
+  - [ ] Install steam-installer from package
+  - [ ] Install discord from package
+  - [ ] Install slack from package
+  - [ ] Install sunshine and setup systemd service
+  - [ ] Install moonlight client
+  - [ ] Install postman
+  - [ ] Install bruno
+  - [ ] Setup HDR
+  - [ ] Install nerdfonts
+  - [ ] Install nerdicons
+  - [ ] Check for and install GoXLR-Utility
+  - [ ] Setup git config
 - [ ] Write a README.md
