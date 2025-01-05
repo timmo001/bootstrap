@@ -188,6 +188,76 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 
+	// Install python + dependencies
+	if err := runCmd("sudo", "apt", "install", "python3", "python3-dev", "-y"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := runCmd("sudo", "apt", "install", "python3-pip", "-y"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := runCmd("sudo", "apt", "install", "python3-venv", "-y"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := runCmd(
+		"sudo", "apt", "install", "autoconf", "libssl-dev", "libxml2-dev", "libxslt1-dev", "libjpeg-dev", "libffi-dev",
+		"libudev-dev", "zlib1g-dev", "pkg-config", "libavformat-dev", "libavcodec-dev", "libavdevice-dev", "libavutil-dev",
+		"libswscale-dev", "libswresample-dev", "libavfilter-dev", "ffmpeg", "libgammu-dev", "-y",
+	); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	// Install rust
+	if err := downloadFile("https://sh.rustup.rs", "rustup-init.sh"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := runCmd("chmod", "+x", "rustup-init.sh"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := runCmd("./rustup-init.sh", "-y"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := deleteFile("rustup-init.sh"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	// Install zig
+	if err := runCmd("sudo", "snap", "install", "zig", "--classic", "--beta"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	// Install docker
+	if err := downloadFile("https://get.docker.com", "docker-install.sh"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := runCmd("chmod", "+x", "docker-install.sh"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := runCmd("./docker-install.sh"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := deleteFile("docker-install.sh"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	// Install docker compose
+	if err := runCmd("sudo", "apt", "install", "docker-compose-plugin", "-y"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	// Install homebrew
+	if err := downloadFile("https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh", "brew-install.sh"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := runCmd("chmod", "+x", "brew-install.sh"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := runCmd("./brew-install.sh"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := deleteFile("brew-install.sh"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
 	// Setup .zshrc
 	zshrcPath := home + "/.zshrc"
 	log.Infof("Setting up %s", zshrcPath)
@@ -243,6 +313,59 @@ func main() {
 	}
 
 	log.Infof("isDesktop: %v", isDesktop)
+
+	// Install desktop environment packages
+	if isDesktop {
+		// Install gnome-tweaks and gnome-shell-extensions
+		if err := runCmd("sudo", "apt", "install", "gnome-tweaks", "gnome-shell-extensions", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+
+		// Setup flatpak and flathub
+		if err := runCmd("sudo", "apt", "install", "flatpak", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("flatpak", "remote-add", "--if-not-exists", "flathub", "https://flathub.org/repo/flathub.flatpakrepo"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("sudo", "apt", "install", "gnome-software-plugin-flatpak", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+
+		// Install zen browser
+		if err := runCmd("flatpak", "install", "flathub", "io.github.zen_browser.zen", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+
+    // Install vs*ode
+    if err := downloadFile("https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64", "vscode.deb"); err != nil {
+      log.Fatalf("error: %v", err)
+    }
+    if err := runCmd("sudo", "apt", "install", "./vscode.deb", "-y"); err != nil {
+      log.Fatalf("error: %v", err)
+    }
+    if err := deleteFile("vscode.deb"); err != nil {
+      log.Fatalf("error: %v", err)
+    }
+
+    // Install postman
+    if err := downloadFile("https://dl.pstmn.io/download/latest/linux64", "postman.tar.gz"); err != nil {
+      log.Fatalf("error: %v", err)
+    }
+    if err := runCmd("tar", "-xzf", "postman.tar.gz"); err != nil {
+      log.Fatalf("error: %v", err)
+    }
+    if err := runCmd("sudo", "mv", "Postman", "/opt/Postman"); err != nil {
+      log.Fatalf("error: %v", err)
+    }
+    if err := runCmd("sudo", "ln", "-s", "/opt/Postman/Postman", "/usr/bin/postman"); err != nil {
+      log.Fatalf("error: %v", err)
+    }
+    if err := deleteFile("postman.tar.gz"); err != nil {
+      log.Fatalf("error: %v", err)
+    }
+
+	}
 
 	log.Info("Bootstrapping complete.")
 }

@@ -8,13 +8,13 @@
     - [x] Update apt
     - [x] Setup zsh
     - [x] Setup oh-my-zsh and .zshrc
-    - [ ] Setup NodeJS and pnpm with corepack
-    - [ ] Setup Docker
-    - [ ] Setup python
-    - [ ] Setup rust
-    - [ ] Setup zig
+    - [x] Setup NodeJS and pnpm with corepack
+    - [x] Setup python
+    - [x] Setup rust
+    - [x] Setup zig
     - [x] Setup ruby
-    - [ ] Setup brew on linux
+    - [x] Setup Docker
+    - [x] Setup brew on linux
     - [ ] Setup nvim
         - [ ] Install from source
         - [ ] Clone timmo001/nvim-config to ~/.config/nvim
@@ -25,15 +25,15 @@
     - [ ] Setup AWS, SSO auth and assign AWS_PROFILE
     - [ ] Check if is ubuntu server or desktop
     - [ ] Install ghostty from source
-    - [ ] Install vs*ode from package
-    - [ ] Install zen browser from package
+    - [x] Install vs*ode from package
+    - [x] Install zen browser
     - [ ] Install chrome browser from package
     - [ ] Install steam-installer from package
     - [ ] Install discord from package
     - [ ] Install slack from package
     - [ ] Install sunshine and setup systemd service
     - [ ] Install moonlight client
-    - [ ] Install postman
+    - [x] Install postman
     - [ ] Install bruno
     - [ ] Setup HDR
     - [ ] Install nerdfonts
