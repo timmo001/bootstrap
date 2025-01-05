@@ -492,6 +492,9 @@ func main() {
 	if err := runCmdInDir("neovim", "sudo", "make", "install"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
+  if err := runCmd("npm", "install", "-g", "neovim"); err != nil {
+    log.Fatalf("error: %v", err)
+  }
 	// if err := deleteDir("neovim"); err != nil {
 	// 	log.Fatalf("error: %v", err)
 	// }
@@ -621,6 +624,8 @@ func main() {
 			log.Fatalf("error: %v", err)
 		}
 		installedPackages = append(installedPackages, "ghostty")
+
+
 
 	}
 
