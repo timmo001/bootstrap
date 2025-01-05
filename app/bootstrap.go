@@ -52,6 +52,7 @@ func runCmd(name string, arg ...string) error {
 
 	// Run the command
 	cmd := exec.Command(name, arg...)
+	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
@@ -63,6 +64,7 @@ func runCmdInDir(dir, name string, arg ...string) error {
 	// Run the command
 	cmd := exec.Command(name, arg...)
 	cmd.Dir = dir
+	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
