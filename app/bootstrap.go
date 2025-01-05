@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"os"
 	"os/exec"
 	"strings"
@@ -9,6 +10,18 @@ import (
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/log"
 )
+
+var forceInstall bool
+
+func init() {
+	flag.BoolVar(&forceInstall, "force", false, "Force install all packages")
+	flag.Parse()
+}
+
+func isExecutableInstalled(name string) bool {
+	_, err := exec.LookPath(name)
+	return err == nil
+}
 
 func deleteDir(dir string) error {
 	log.Infof("Deleting directory: %s", dir)
@@ -100,14 +113,22 @@ func main() {
 
 	log.Info("Bootstrapping...")
 
+	var installedPackages []string
+
 	// Update apt
-	if err := runCmd("sudo", "apt", "update"); err != nil {
-		log.Fatalf("error: %v", err)
+	if forceInstall || !isExecutableInstalled("apt") {
+		if err := runCmd("sudo", "apt", "update"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		installedPackages = append(installedPackages, "apt update")
 	}
 
 	// Upgrade apt
-	if err := runCmd("sudo", "apt", "full-upgrade", "-y"); err != nil {
-		log.Fatalf("error: %v", err)
+	if forceInstall || !isExecutableInstalled("apt") {
+		if err := runCmd("sudo", "apt", "full-upgrade", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		installedPackages = append(installedPackages, "apt full-upgrade")
 	}
 
 	// Exit if the shell is not zsh
@@ -116,47 +137,65 @@ func main() {
 	}
 
 	// Install curl
-	if err := runCmd("sudo", "apt", "install", "curl", "-y"); err != nil {
-		log.Fatalf("error: %v", err)
+	if forceInstall || !isExecutableInstalled("curl") {
+		if err := runCmd("sudo", "apt", "install", "curl", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		installedPackages = append(installedPackages, "curl")
 	}
 
 	// Install git
-	if err := runCmd("sudo", "apt", "install", "git", "-y"); err != nil {
-		log.Fatalf("error: %v", err)
+	if forceInstall || !isExecutableInstalled("git") {
+		if err := runCmd("sudo", "apt", "install", "git", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		installedPackages = append(installedPackages, "git")
 	}
 
 	// Install ruby
-	if err := runCmd("sudo", "apt", "install", "ruby", "-y"); err != nil {
-		log.Fatalf("error: %v", err)
+	if forceInstall || !isExecutableInstalled("ruby") {
+		if err := runCmd("sudo", "apt", "install", "ruby", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		installedPackages = append(installedPackages, "ruby")
 	}
 
 	// Install zsh-autosuggestions
-	if err := runCmd("sudo", "apt", "install", "zsh-autosuggestions", "-y"); err != nil {
-		log.Fatalf("error: %v", err)
+	if forceInstall || !isExecutableInstalled("zsh-autosuggestions") {
+		if err := runCmd("sudo", "apt", "install", "zsh-autosuggestions", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		installedPackages = append(installedPackages, "zsh-autosuggestions")
 	}
 
 	// Install zsh-syntax-highlighting
-	if err := runCmd("sudo", "apt", "install", "zsh-syntax-highlighting", "-y"); err != nil {
-		log.Fatalf("error: %v", err)
+	if forceInstall || !isExecutableInstalled("zsh-syntax-highlighting") {
+		if err := runCmd("sudo", "apt", "install", "zsh-syntax-highlighting", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		installedPackages = append(installedPackages, "zsh-syntax-highlighting")
 	}
 
 	// Install oh-my-zsh
 	omzDir := home + "/.oh-my-zsh"
-	if err := deleteDir(omzDir); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := downloadFile("https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh", "install.sh"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := runCmd("zsh", "install.sh"); err != nil {
-		log.Errorf("error: %v", err)
+	if forceInstall || !isExecutableInstalled("omz") {
+		if err := deleteDir(omzDir); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := downloadFile("https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh", "install.sh"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("zsh", "install.sh"); err != nil {
+			log.Errorf("error: %v", err)
+			if err := deleteFile("install.sh"); err != nil {
+				log.Fatalf("error: %v", err)
+			}
+			log.Fatal("error installing oh-my-zsh")
+		}
 		if err := deleteFile("install.sh"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
-		log.Fatal("error installing oh-my-zsh")
-	}
-	if err := deleteFile("install.sh"); err != nil {
-		log.Fatalf("error: %v", err)
+		installedPackages = append(installedPackages, "oh-my-zsh")
 	}
 
 	// Download omz plugins
@@ -207,17 +246,20 @@ func main() {
 	}
 
 	// Install rust
-	if err := downloadFile("https://sh.rustup.rs", "rustup-init.sh"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := runCmd("chmod", "+x", "rustup-init.sh"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := runCmd("./rustup-init.sh", "-y"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := deleteFile("rustup-init.sh"); err != nil {
-		log.Fatalf("error: %v", err)
+	if forceInstall || !isExecutableInstalled("rustc") {
+		if err := downloadFile("https://sh.rustup.rs", "rustup-init.sh"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("chmod", "+x", "rustup-init.sh"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("./rustup-init.sh", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := deleteFile("rustup-init.sh"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		installedPackages = append(installedPackages, "rust")
 	}
 
 	// Install zig
@@ -226,17 +268,20 @@ func main() {
 	}
 
 	// Install docker
-	if err := downloadFile("https://get.docker.com", "docker-install.sh"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := runCmd("chmod", "+x", "docker-install.sh"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := runCmd("./docker-install.sh"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := deleteFile("docker-install.sh"); err != nil {
-		log.Fatalf("error: %v", err)
+	if forceInstall || !isExecutableInstalled("docker") {
+		if err := downloadFile("https://get.docker.com", "docker-install.sh"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("chmod", "+x", "docker-install.sh"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("./docker-install.sh"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := deleteFile("docker-install.sh"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		installedPackages = append(installedPackages, "docker")
 	}
 
 	// Install docker compose
@@ -245,17 +290,20 @@ func main() {
 	}
 
 	// Install homebrew
-	if err := downloadFile("https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh", "brew-install.sh"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := runCmd("chmod", "+x", "brew-install.sh"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := runCmd("./brew-install.sh"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := deleteFile("brew-install.sh"); err != nil {
-		log.Fatalf("error: %v", err)
+	if forceInstall || !isExecutableInstalled("brew") {
+		if err := downloadFile("https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh", "brew-install.sh"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("chmod", "+x", "brew-install.sh"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("./brew-install.sh"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := deleteFile("brew-install.sh"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		installedPackages = append(installedPackages, "homebrew")
 	}
 
 	// Setup .zshrc
@@ -368,4 +416,5 @@ func main() {
 	}
 
 	log.Info("Bootstrapping complete.")
+	log.Infof("Installed packages: %v", installedPackages)
 }
