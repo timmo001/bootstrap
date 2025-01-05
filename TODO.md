@@ -32,7 +32,7 @@
     - [ ] Install slack from package
     - [ ] Install sunshine and setup systemd service
     - [ ] Install moonlight client
-    - [x] Install postman
+    - [ ] Install postman
     - [ ] Install bruno
     - [ ] Setup HDR
     - [ ] Install nerdfonts

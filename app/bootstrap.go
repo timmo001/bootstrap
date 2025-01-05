@@ -503,22 +503,22 @@ func main() {
 			log.Fatalf("error: %v", err)
 		}
 
-		// Install postman
-		if err := downloadFile("https://dl.pstmn.io/download/latest/linux64", "postman.tar.gz"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := runCmd("tar", "-xzf", "postman.tar.gz"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := runCmd("sudo", "mv", "Postman", "/opt/Postman"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := runCmd("sudo", "ln", "-s", "/opt/Postman/Postman", "/usr/bin/postman"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := deleteFile("postman.tar.gz"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
+		// // Install postman
+		// if err := downloadFile("https://dl.pstmn.io/download/latest/linux64", "postman.tar.gz"); err != nil {
+		// 	log.Fatalf("error: %v", err)
+		// }
+		// if err := runCmd("tar", "-xzf", "postman.tar.gz"); err != nil {
+		// 	log.Fatalf("error: %v", err)
+		// }
+		// if err := runCmd("sudo", "mv", "Postman", "/opt/Postman"); err != nil {
+		// 	log.Fatalf("error: %v", err)
+		// }
+		// if err := runCmd("sudo", "ln", "-s", "/opt/Postman/Postman", "/usr/bin/postman"); err != nil {
+		// 	log.Fatalf("error: %v", err)
+		// }
+		// if err := deleteFile("postman.tar.gz"); err != nil {
+		// 	log.Fatalf("error: %v", err)
+		// }
 
 	}
 
