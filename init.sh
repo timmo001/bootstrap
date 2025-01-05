@@ -46,12 +46,16 @@ else
     else
       # Add go to PATH
       echo "Adding go to PATH"
-      echo "export PATH=$PATH:/usr/local/go/bin" >>~/.bashrc
-      echo "export PATH=$PATH:/usr/local/go/bin" >>~/.zshrc
+      echo "export PATH=\$PATH:/usr/local/go/bin" >>~/.bashrc
+      echo "export PATH=\$PATH:/usr/local/go/bin" >>~/.zshrc
     fi
 
     # Remove downloaded file
     rm $filename
+
+    # Source current shell rc file
+    echo "source ~/.$CURRENT_SHELL"rc""
+    source ~/.$CURRENT_SHELL"rc"
 
     echo "Verify go installation"
     go version
@@ -78,7 +82,20 @@ else
   echo "source ~/.$CURRENT_SHELL"rc""
   source ~/.$CURRENT_SHELL"rc"
 
+  if [ $CURRENT_SHELL != "zsh" ]; then
+    echo "Install zsh"
+    sudo apt update
+    sudo apt install -y zsh
+  fi
+
   echo "Init complete"
+fi
+
+if [ $CURRENT_SHELL != "zsh" ]; then
+  chsh -s $(which zsh)
+  sudo chsh -s $(which zsh)
+
+  echo "Please restart your terminal to switch to zsh"
 fi
 
 echo "running go mod tidy"
