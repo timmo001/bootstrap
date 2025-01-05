@@ -158,22 +158,35 @@ func main() {
 
 	var installedPackages []string
 
+	// Ask if the user is running on a desktop environment
+	printSeparator("Checking if running on a desktop environment")
+	isDesktop := false
+	form := huh.NewForm(
+		huh.NewGroup(
+			huh.NewConfirm().
+				Title("Are you running on a desktop environment?").
+				Value(&isDesktop),
+		),
+	)
+	if err := form.Run(); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
 	// Update apt
-	printSeparator("Updating apt package list")
-	if forceInstall || !isExecutableInstalled("apt") {
-		if err := runCmd("sudo", "apt", "update"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		installedPackages = append(installedPackages, "apt update")
+	if err := runCmd("sudo", "apt", "update"); err != nil {
+		log.Fatalf("error: %v", err)
 	}
 
 	// Upgrade apt
-	printSeparator("Upgrading apt packages")
-	if forceInstall || !isExecutableInstalled("apt") {
-		if err := runCmd("sudo", "apt", "full-upgrade", "-y"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		installedPackages = append(installedPackages, "apt full-upgrade")
+	printSeparator("Upgrade apt packages")
+	if err := runCmd("sudo", "apt", "full-upgrade", "-y"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	// Cleanup apt
+	printSeparator("Cleanup apt packages")
+	if err := runCmd("sudo", "apt", "autoremove", "-y"); err != nil {
+		log.Fatalf("error: %v", err)
 	}
 
 	// Exit if the shell is not zsh
@@ -183,7 +196,7 @@ func main() {
 	}
 
 	// Install wget
-	printSeparator("Installing wget")
+	printSeparator("wget")
 	if forceInstall || !isExecutableInstalled("wget") {
 		if err := runCmd("sudo", "apt", "install", "wget", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
@@ -192,7 +205,7 @@ func main() {
 	}
 
 	// Install curl
-	printSeparator("Installing curl")
+	printSeparator("curl")
 	if forceInstall || !isExecutableInstalled("curl") {
 		if err := runCmd("sudo", "apt", "install", "curl", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
@@ -201,7 +214,7 @@ func main() {
 	}
 
 	// Install git
-	printSeparator("Installing git")
+	printSeparator("git")
 	if forceInstall || !isExecutableInstalled("git") {
 		if err := runCmd("sudo", "apt", "install", "git", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
@@ -210,7 +223,7 @@ func main() {
 	}
 
 	// Install gh
-	printSeparator("Installing GitHub CLI (gh)")
+	printSeparator("GitHub CLI (gh)")
 	if forceInstall || !isExecutableInstalled("gh") {
 		if err := runCmd("sudo", "mkdir", "-p", "-m", "775", "/etc/apt/keyrings"); err != nil {
 			log.Fatalf("error: %v", err)
@@ -237,7 +250,7 @@ func main() {
 	}
 
 	// Install ruby
-	printSeparator("Installing ruby")
+	printSeparator("ruby")
 	if forceInstall || !isExecutableInstalled("ruby") {
 		if err := runCmd("sudo", "apt", "install", "ruby", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
@@ -246,7 +259,7 @@ func main() {
 	}
 
 	// Install zsh-autosuggestions
-	printSeparator("Installing zsh-autosuggestions")
+	printSeparator("zsh-autosuggestions")
 	if forceInstall || !isExecutableInstalled("zsh-autosuggestions") {
 		if err := runCmd("sudo", "apt", "install", "zsh-autosuggestions", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
@@ -255,7 +268,7 @@ func main() {
 	}
 
 	// Install zsh-syntax-highlighting
-	printSeparator("Installing zsh-syntax-highlighting")
+	printSeparator("zsh-syntax-highlighting")
 	if forceInstall || !isExecutableInstalled("zsh-syntax-highlighting") {
 		if err := runCmd("sudo", "apt", "install", "zsh-syntax-highlighting", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
@@ -264,7 +277,7 @@ func main() {
 	}
 
 	// Install oh-my-zsh
-	printSeparator("Installing oh-my-zsh")
+	printSeparator("oh-my-zsh")
 	if forceInstall || !isExecutableInstalled("omz") {
 		if err := deleteDir(home + "/.oh-my-zsh"); err != nil {
 			log.Fatalf("error: %v", err)
@@ -302,7 +315,7 @@ func main() {
 	}
 
 	// Install nodejs
-	printSeparator("Installing Node.js")
+	printSeparator("Node.js")
 	if err := downloadFile("https://fnm.vercel.app/install", "fnm-install.sh"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
@@ -317,7 +330,7 @@ func main() {
 	}
 
 	// Install python + dependencies
-	printSeparator("Installing Python and dependencies")
+	printSeparator("Python and dependencies")
 	if err := runCmd("sudo", "apt", "install", "python3", "python3-dev", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
@@ -336,7 +349,7 @@ func main() {
 	}
 
 	// Install rust
-	printSeparator("Installing Rust")
+	printSeparator("Rust")
 	if forceInstall || !isExecutableInstalled("rustc") {
 		if err := downloadFile("https://sh.rustup.rs", "rustup-init.sh"); err != nil {
 			log.Fatalf("error: %v", err)
@@ -354,13 +367,14 @@ func main() {
 	}
 
 	// Install zig
-	printSeparator("Installing Zig")
+	printSeparator("Zig")
 	if err := runCmd("sudo", "snap", "install", "zig", "--classic", "--beta"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
+	installedPackages = append(installedPackages, "zig")
 
 	// Install docker
-	printSeparator("Installing Docker")
+	printSeparator("Docker")
 	if forceInstall || !isExecutableInstalled("docker") {
 		if err := downloadFile("https://get.docker.com", "docker-install.sh"); err != nil {
 			log.Fatalf("error: %v", err)
@@ -378,13 +392,14 @@ func main() {
 	}
 
 	// Install docker compose
-	printSeparator("Installing Docker Compose")
+	printSeparator("Docker Compose")
 	if err := runCmd("sudo", "apt", "install", "docker-compose-plugin", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
+	installedPackages = append(installedPackages, "docker-compose-plugin")
 
 	// Install homebrew
-	printSeparator("Installing Homebrew")
+	printSeparator("Homebrew")
 	if forceInstall || !isExecutableInstalled("brew") {
 		if err := downloadFile("https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh", "brew-install.sh"); err != nil {
 			log.Fatalf("error: %v", err)
@@ -443,13 +458,13 @@ func main() {
 	}
 
 	// Install markdownlint
-	printSeparator("Installing markdownlint")
+	printSeparator("markdownlint")
 	if err := runCmd("sudo", "gem", "install", "mdl"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
 	// Install neovim
-	printSeparator("Installing Neovim")
+	printSeparator("Neovim")
 	if err := runCmd("sudo", "apt", "install", "ninja-build", "gettext", "cmake", "unzip", "curl", "build-essential", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
@@ -467,31 +482,31 @@ func main() {
 	// }
 
 	// Install ripgrep
-	printSeparator("Installing ripgrep")
+	printSeparator("ripgrep")
 	if err := runCmd("sudo", "apt", "install", "ripgrep", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
 	// Install fzf
-	printSeparator("Installing fzf")
+	printSeparator("fzf")
 	if err := runCmd("sudo", "apt", "install", "fzf", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
 	// Install bat
-	printSeparator("Installing bat")
+	printSeparator("bat")
 	if err := runCmd("sudo", "apt", "install", "bat", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
 	// Install lynx
-	printSeparator("Installing lynx")
+	printSeparator("lynx")
 	if err := runCmd("sudo", "apt", "install", "lynx", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
 	// Install lazygit if not installed
-	printSeparator("Installing lazygit")
+	printSeparator("lazygit")
 	if !isExecutableInstalled("lazygit") {
 		if err := runCmd("brew", "install", "lazygit"); err != nil {
 			log.Fatalf("error: %v", err)
@@ -499,7 +514,7 @@ func main() {
 	}
 
 	// Install lazydocker if not installed
-	printSeparator("Installing lazydocker")
+	printSeparator("lazydocker")
 	if !isExecutableInstalled("lazydocker") {
 		if err := runCmd("brew", "install", "lazydocker"); err != nil {
 			log.Fatalf("error: %v", err)
@@ -507,7 +522,7 @@ func main() {
 	}
 
 	// Install neovim config
-	printSeparator("Installing Neovim config")
+	printSeparator("Neovim config")
 	if err := deleteDir(home + "/.config/nvim"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
@@ -518,24 +533,12 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 
-	// Ask if the user is running on a desktop environment
-	printSeparator("Checking if running on a desktop environment")
-	isDesktop := false
-	form := huh.NewForm(
-		huh.NewGroup(
-			huh.NewConfirm().Title("Are you running on a desktop environment?").Value(&isDesktop),
-		),
-	)
-	if err := form.Run(); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-
 	log.Infof("isDesktop: %v", isDesktop)
 
 	// Install desktop environment packages
 	if isDesktop {
 		// Install gnome-tweaks and gnome-shell-extensions
-		printSeparator("Installing gnome-tweaks and gnome-shell-extensions")
+		printSeparator("gnome-tweaks and gnome-shell-extensions")
 		if err := runCmd("sudo", "apt", "install", "gnome-tweaks", "gnome-shell-extensions", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
@@ -553,13 +556,13 @@ func main() {
 		}
 
 		// Install zen browser
-		printSeparator("Installing Zen Browser")
+		printSeparator("Zen Browser")
 		if err := runCmd("flatpak", "install", "flathub", "io.github.zen_browser.zen", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 
 		// Install vs*ode
-		printSeparator("Installing VS C*de")
+		printSeparator("VS C*de")
 		if err := downloadFile("https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64", "vscode.deb"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
@@ -571,7 +574,7 @@ func main() {
 		}
 
 		// // Install postman
-		// printSeparator("Installing Postman")
+		// printSeparator("Postman")
 		// if err := downloadFile("https://dl.pstmn.io/download/latest/linux64", "postman.tar.gz"); err != nil {
 		// 	log.Fatalf("error: %v", err)
 		// }
@@ -589,16 +592,18 @@ func main() {
 		// }
 
 		// Install ghostty
-		printSeparator("Installing Ghostty")
+		printSeparator("Ghostty")
 		if err := runCmd("sudo", "apt", "install", "libgtk-4-dev", "libadwaita-1-dev", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
+		installedPackages = append(installedPackages, "libgtk-4-dev", "libadwaita-1-dev")
 		if err := updateOrCloneRepo("https://github.com/ghostty-org/ghostty", "ghostty"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 		if err := runCmdInDir("ghostty", "zig", "build", "-p", home+"/.local", "-Doptimize=ReleaseFast"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
+		installedPackages = append(installedPackages, "ghostty")
 
 	}
 
