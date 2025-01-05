@@ -163,19 +163,18 @@ func main() {
     log.Fatalf("error: %v", err)
   }
 
-
-
   // Download omz plugins
-  if err := runCmd("git", "clone", "https://github.com/zsh-users/zsh-autosuggestions.git", "$ZSH_CUSTOM/plugins/zsh-autosuggestions"); err != nil {
+  pluginsDir := home + "/.oh-my-zsh/custom/plugins"
+  if err := runCmd("git", "clone", "https://github.com/zsh-users/zsh-autosuggestions.git", pluginsDir + "/zsh-autosuggestions"); err != nil {
     log.Fatalf("error: %v", err)
   }
-  if err := runCmd("git", "clone", "https://github.com/zsh-users/zsh-syntax-highlighting.git", "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"); err != nil {
+  if err := runCmd("git", "clone", "https://github.com/zsh-users/zsh-syntax-highlighting.git", pluginsDir + "/zsh-syntax-highlighting"); err != nil {
     log.Fatalf("error: %v", err)
   }
-  if err := runCmd("git", "clone", "https://github.com/zdharma-continuum/fast-syntax-highlighting.git", "$ZSH_CUSTOM/plugins/fast-syntax-highlighting"); err != nil {
+  if err := runCmd("git", "clone", "https://github.com/zdharma-continuum/fast-syntax-highlighting.git", pluginsDir + "/fast-syntax-highlighting"); err != nil {
     log.Fatalf("error: %v", err)
   }
-  if err := runCmd("git", "clone", "--depth=1", "--", "https://github.com/marlonrichert/zsh-autocomplete.git", "$ZSH_CUSTOM/plugins/zsh-autocomplete"); err != nil {
+  if err := runCmd("git", "clone", "--depth=1", "--", "https://github.com/marlonrichert/zsh-autocomplete.git", pluginsDir + "/zsh-autocomplete"); err != nil {
     log.Fatalf("error: %v", err)
   }
 
