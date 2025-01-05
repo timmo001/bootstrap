@@ -22,4 +22,17 @@ func main() {
 	}
 
 	log.Infof("isDesktop: %v", isDesktop)
+
+  // Update apt
+  if err := runCmd("sudo", "apt", "update"); err != nil {
+    log.Fatalf("error: %v", err)
+  }
+
+  // Upgrade apt
+  if err := runCmd("sudo", "apt", "full-upgrade"); err != nil {
+    log.Fatalf("error: %v", err)
+  }
+
+
+  log.Info("Bootstrapping complete.")
 }
