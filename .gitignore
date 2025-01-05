@@ -2,4 +2,5 @@ neovim/
 *.deb
 *.tar.gz
 *.tar.xz
-install.sh
+*.sh
+!init.sh

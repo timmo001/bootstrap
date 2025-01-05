@@ -229,17 +229,17 @@ func main() {
 		if err := deleteDir(omzDir); err != nil {
 			log.Fatalf("error: %v", err)
 		}
-		if err := downloadFile("https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh", "install.sh"); err != nil {
+		if err := downloadFile("https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh", "omz-install.sh"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
-		if err := runCmd("zsh", "install.sh"); err != nil {
+		if err := runCmd("zsh", "omz-install.sh"); err != nil {
 			log.Errorf("error: %v", err)
-			if err := deleteFile("install.sh"); err != nil {
+			if err := deleteFile("omz-install.sh"); err != nil {
 				log.Fatalf("error: %v", err)
 			}
 			log.Fatal("error installing oh-my-zsh")
 		}
-		if err := deleteFile("install.sh"); err != nil {
+		if err := deleteFile("omz-install.sh"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 		installedPackages = append(installedPackages, "oh-my-zsh")
