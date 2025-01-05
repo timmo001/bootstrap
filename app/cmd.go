@@ -7,7 +7,7 @@ import (
 	"github.com/charmbracelet/log"
 )
 
-func runCmd(name string, arg ...string) error {
+func RunCmd(name string, arg ...string) error {
 	log.Infof("Running command: %s %v", name, arg)
 
 	// Run the command
