@@ -1,20 +1,33 @@
 package main
 
 import (
+	"os"
+	"os/exec"
+
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/log"
 )
+
+func runCmd(name string, arg ...string) error {
+	log.Infof("Running command: %s %v", name, arg)
+
+	// Run the command
+	cmd := exec.Command(name, arg...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
+}
 
 func main() {
 	log.Info("Bootstrapping...")
 
 	// Update apt
-	if err := RunCmd("sudo", "apt", "update"); err != nil {
+	if err := runCmd("sudo", "apt", "update"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
 	// Upgrade apt
-	if err := RunCmd("sudo", "apt", "full-upgrade"); err != nil {
+	if err := runCmd("sudo", "apt", "full-upgrade"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
