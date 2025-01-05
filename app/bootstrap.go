@@ -57,6 +57,17 @@ func runCmd(name string, arg ...string) error {
 	return cmd.Run()
 }
 
+func runCmdInDir(dir, name string, arg ...string) error {
+	log.Infof("Running command in directory: %s %s %v", dir, name, arg)
+
+	// Run the command
+	cmd := exec.Command(name, arg...)
+	cmd.Dir = dir
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
+}
+
 func isLineInFile(file, line string) (bool, error) {
 	// Check if the line is in the file
 	// Open the file
@@ -136,6 +147,14 @@ func main() {
 		log.Fatalf("Please restart your shell and run the script again in zsh to continue.")
 	}
 
+	// Install wget
+	if forceInstall || !isExecutableInstalled("wget") {
+		if err := runCmd("sudo", "apt", "install", "wget", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		installedPackages = append(installedPackages, "wget")
+	}
+
 	// Install curl
 	if forceInstall || !isExecutableInstalled("curl") {
 		if err := runCmd("sudo", "apt", "install", "curl", "-y"); err != nil {
@@ -150,6 +169,32 @@ func main() {
 			log.Fatalf("error: %v", err)
 		}
 		installedPackages = append(installedPackages, "git")
+	}
+
+	// Install gh
+	if forceInstall || !isExecutableInstalled("gh") {
+		if err := runCmd("sudo", "mkdir", "-p", "-m", "775", "/etc/apt/keyrings"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := downloadFile("https://cli.github.com/packages/githubcli-archive-keyring.gpg", "githubcli-archive-keyring.gpg"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("sudo", "mv", "githubcli-archive-keyring.gpg", "/etc/apt/keyrings/githubcli-archive-keyring.gpg"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("sudo", "chmod", "go+r", "/etc/apt/keyrings/githubcli-archive-keyring.gpg"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("echo", "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("sudo", "apt", "update"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("sudo", "apt", "install", "gh", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		installedPackages = append(installedPackages, "gh")
 	}
 
 	// Install ruby
@@ -349,6 +394,68 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 
+	// Install neovim
+	if err := runCmd("sudo", "apt", "install", "ninja-build", "gettext", "cmake", "unzip", "curl", "build-essential", "-y"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := runCmdInDir("neovim", "git", "clone", "--depth", "1", "https://github.com/neovim/neovim"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := runCmdInDir("neovim", "make", "CMAKE_BUILD_TYPE=Release"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := runCmdInDir("neovim", "sudo", "make", "install"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := deleteDir("neovim"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	// Install ripgrep
+	if err := runCmd("sudo", "apt", "install", "ripgrep", "-y"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	// Install fzf
+	if err := runCmd("sudo", "apt", "install", "fzf", "-y"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	// Install bat
+	if err := runCmd("sudo", "apt", "install", "bat", "-y"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	// Install lynx
+	if err := runCmd("sudo", "apt", "install", "lynx", "-y"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	// Install lazygit if not installed
+	if !isExecutableInstalled("lazygit") {
+		if err := runCmd("brew", "install", "lazygit"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+	}
+
+	// Install lazydocker if not installed
+	if !isExecutableInstalled("lazydocker") {
+		if err := runCmd("brew", "install", "lazydocker"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+	}
+
+	// Install neovim
+	if err := deleteDir(home + "/.config/nvim"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := runCmd("git", "clone", "timmo001/nvim-config", home+"/.config/nvim"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := runCmd("nvim", "+PlugInstall", "+qall"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
 	// Ask if the user is running on a desktop environment
 	isDesktop := false
 	form := huh.NewForm(
@@ -385,33 +492,33 @@ func main() {
 			log.Fatalf("error: %v", err)
 		}
 
-    // Install vs*ode
-    if err := downloadFile("https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64", "vscode.deb"); err != nil {
-      log.Fatalf("error: %v", err)
-    }
-    if err := runCmd("sudo", "apt", "install", "./vscode.deb", "-y"); err != nil {
-      log.Fatalf("error: %v", err)
-    }
-    if err := deleteFile("vscode.deb"); err != nil {
-      log.Fatalf("error: %v", err)
-    }
+		// Install vs*ode
+		if err := downloadFile("https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64", "vscode.deb"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("sudo", "apt", "install", "./vscode.deb", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := deleteFile("vscode.deb"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
 
-    // Install postman
-    if err := downloadFile("https://dl.pstmn.io/download/latest/linux64", "postman.tar.gz"); err != nil {
-      log.Fatalf("error: %v", err)
-    }
-    if err := runCmd("tar", "-xzf", "postman.tar.gz"); err != nil {
-      log.Fatalf("error: %v", err)
-    }
-    if err := runCmd("sudo", "mv", "Postman", "/opt/Postman"); err != nil {
-      log.Fatalf("error: %v", err)
-    }
-    if err := runCmd("sudo", "ln", "-s", "/opt/Postman/Postman", "/usr/bin/postman"); err != nil {
-      log.Fatalf("error: %v", err)
-    }
-    if err := deleteFile("postman.tar.gz"); err != nil {
-      log.Fatalf("error: %v", err)
-    }
+		// Install postman
+		if err := downloadFile("https://dl.pstmn.io/download/latest/linux64", "postman.tar.gz"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("tar", "-xzf", "postman.tar.gz"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("sudo", "mv", "Postman", "/opt/Postman"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("sudo", "ln", "-s", "/opt/Postman/Postman", "/usr/bin/postman"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := deleteFile("postman.tar.gz"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
 
 	}
 

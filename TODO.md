@@ -1,10 +1,10 @@
 # TODO
 
-- [ ] Install go and run with script - `init.sh`
+- Install go and run with script - `init.sh`
     - [x] Get shell
     - [x] Install go
     - [x] Build and run the go program
-- [ ] Write a go program to fully bootstrap
+- Write a go program to fully bootstrap
     - [x] Update apt
     - [x] Setup zsh
     - [x] Setup oh-my-zsh and .zshrc
@@ -15,15 +15,14 @@
     - [x] Setup ruby
     - [x] Setup Docker
     - [x] Setup brew on linux
-    - [ ] Setup nvim
-        - [ ] Install from source
-        - [ ] Clone timmo001/nvim-config to ~/.config/nvim
-    - [ ] Install ripgrep
-    - [ ] Install fzf
-    - [ ] Install [insert package that is wanted from :checkhealth for nvim]
-    - [ ] Install lazygit
+    - [x] Setup nvim
+        - [x] Install from source
+        - [x] Clone timmo001/nvim-config to ~/.config/nvim
+    - [x] Install ripgrep
+    - [x] Install fzf
+    - [x] Install lynx
+    - [x] Install lazygit
     - [ ] Setup AWS, SSO auth and assign AWS_PROFILE
-    - [ ] Check if is ubuntu server or desktop
     - [ ] Install ghostty from source
     - [x] Install vs*ode from package
     - [x] Install zen browser
