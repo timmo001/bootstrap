@@ -381,12 +381,12 @@ func main() {
 
 	// Enable yarn
 	if err := runCmd("corepack", "enable", "yarn"); err != nil {
-		log.Fatalf("error: %v", err)
+		log.Errorf("error: %v", err)
 	}
 
 	// Enable pnpm
 	if err := runCmd("corepack", "enable", "pnpm"); err != nil {
-		log.Fatalf("error: %v", err)
+		log.Errorf("error: %v", err)
 	}
 
 	// Install markdownlint

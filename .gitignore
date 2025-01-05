@@ -1,1 +1,4 @@
 neovim/
+*.deb
+*.tar.gz
+*.tar.xz
