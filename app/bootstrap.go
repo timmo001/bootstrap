@@ -197,6 +197,12 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 
+	// Copy .editorconfig
+	printSeparator("Copying .editorconfig")
+	if err := runCmd("cp", ".editorconfig", home); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
 	// Exit if the shell is not zsh
 	printSeparator("Checking shell")
 	if !strings.Contains(shell, "zsh") {
@@ -228,6 +234,22 @@ func main() {
 			log.Fatalf("error: %v", err)
 		}
 		installedPackages = append(installedPackages, "git")
+	}
+	err := runCmd("git", "config", "--global", "pull.rebase", "true")
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	err = runCmd("git", "config", "--global", "rebase.autoStash", "true")
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	err = runCmd("git", "config", "--global", "core.editor", "nvim")
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	err = runCmd("git", "config", "--global", "push.default", "current")
+	if err != nil {
+		log.Fatalf("error: %v", err)
 	}
 
 	// Install gh
@@ -442,12 +464,9 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 	defer f.Close()
-
 	log.Infof("Reading %s", f.Name())
-
 	// Read the file line by line using scanner
 	scanner := bufio.NewScanner(f)
-
 	for scanner.Scan() {
 		// Read the file line by line
 		line := scanner.Text()
@@ -568,7 +587,7 @@ func main() {
 	if err := runCmdInDir("nerd-fonts", "sudo", "bash", "install.sh"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	if err := runCmd("gsettings", "set", "org.gnome.desktop.interface", "monospace-font-name", "'FiraMono Nerd Font Medium 12'"); err != nil {
+	if err := runCmd("gsettings", "set", "org.gnome.desktop.interface", "monospace-font-name", "'FiraMono Nerd Font Medium 13'"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
@@ -614,23 +633,26 @@ func main() {
 			}
 		}
 
-		// // Install postman
-		// printSeparator("Postman")
-		// if err := downloadFile("https://dl.pstmn.io/download/latest/linux64", "postman.tar.gz"); err != nil {
-		// 	log.Fatalf("error: %v", err)
-		// }
-		// if err := runCmd("tar", "-xzf", "postman.tar.gz"); err != nil {
-		// 	log.Fatalf("error: %v", err)
-		// }
-		// if err := runCmd("sudo", "mv", "Postman", "/opt/Postman"); err != nil {
-		// 	log.Fatalf("error: %v", err)
-		// }
-		// if err := runCmd("sudo", "ln", "-s", "/opt/Postman/Postman", "/usr/bin/postman"); err != nil {
-		// 	log.Fatalf("error: %v", err)
-		// }
-		// if err := deleteFile("postman.tar.gz"); err != nil {
-		// 	log.Fatalf("error: %v", err)
-		// }
+		// Install postman
+		printSeparator("Postman")
+		if err := downloadFile("https://dl.pstmn.io/download/latest/linux_64", "postman.tar.gz"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+    if err := runCmd("sudo", "rm", "-rf", "/usr/bin/postman"); err != nil {
+      log.Fatalf("error: %v", err)
+    }
+		if err := runCmd("sudo", "rm", "-rf", "/opt/Postman"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("sudo", "tar", "-xzf", "postman.tar.gz", "-C", "/opt"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("sudo", "ln", "-s", "/opt/Postman/Postman", "/usr/bin/postman"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := deleteFile("postman.tar.gz"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
 
 		// Install ghostty
 		printSeparator("Ghostty")
@@ -655,8 +677,30 @@ func main() {
 		if err := runCmd("gsettings", "set", "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/", "command", "'/usr/bin/ghostty'"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
+		// Scan the ~/.config/ghostty/config and for differences with ghostty-config
+		ghosttyConfigPath := home + "/.config/ghostty/config"
+		// Open ./ghostty-config
+		f, err := os.OpenFile("./ghostty-config", os.O_RDONLY, 0644)
+		if err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		defer f.Close()
+		log.Infof("Reading %s", f.Name())
+		// Read the file line by line using scanner
+		scanner := bufio.NewScanner(f)
+		for scanner.Scan() {
+			// Read the file line by line
+			line := scanner.Text()
 
-    // Install chrome
+			log.Infof("Line: %s", line)
+
+			// Add the line to ~/.zshrc
+			if err := addIfMissingToFile(ghosttyConfigPath, line); err != nil {
+				log.Fatalf("error: %v", err)
+			}
+		}
+
+		// Install chrome
 		printSeparator("Google Chrome")
 		if err := downloadFile("https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb", "chrome.deb"); err != nil {
 			log.Fatalf("error: %v", err)
@@ -693,6 +737,40 @@ func main() {
 		}
 		if err := deleteFile("steam.deb"); err != nil {
 			log.Fatalf("error: %v", err)
+		}
+
+		// Install sunshine
+		printSeparator("Sunshine")
+		if err := downloadFile("https://github.com/LizardByte/Sunshine/releases/download/v0.23.1/sunshine-ubuntu-24.04-amd64.deb", "sunshine.deb"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("sudo", "apt", "install", "./sunshine.deb", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := deleteFile("sunshine.deb"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+
+		// Install moonlight
+		printSeparator("Moonlight")
+		if err := runCmd("flatpak", "install", "flathub", "com.moonlight_stream.Moonlight", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+
+		// Check for GoXLR and install GoXLR-Utility
+		if _, err := os.Stat("/dev/snd/GoXLR"); err == nil {
+			if forceInstall || !isExecutableInstalled("goxlr-utility") {
+				printSeparator("GoXLR-Utility")
+				if err := downloadFile("https://github.com/GoXLR-on-Linux/goxlr-utility/releases/download/v1.1.4/goxlr-utility_1.1.4-1_amd64.deb", "goxlr-utility.deb"); err != nil {
+					log.Fatalf("error: %v", err)
+				}
+				if err := runCmd("sudo", "apt", "install", "./goxlr-utility.deb", "-y"); err != nil {
+					log.Fatalf("error: %v", err)
+				}
+				if err := deleteFile("goxlr-utility.deb"); err != nil {
+					log.Fatalf("error: %v", err)
+				}
+			}
 		}
 	}
 
