@@ -38,4 +38,5 @@
     - [ ] Install nerdfonts
     - [ ] Install nerdicons
     - [ ] Check for and install GoXLR-Utility
+    - [ ] Setup git config
 - [ ] Write a README.md
