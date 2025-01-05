@@ -7,7 +7,7 @@
 - [ ] Write a go program to fully bootstrap
     - [x] Update apt
     - [x] Setup zsh
-    - [ ] Setup oh-my-zsh
+    - [x] Setup oh-my-zsh and .zshrc
     - [ ] Setup NodeJS and pnpm with corepack
     - [ ] Setup Docker
     - [ ] Setup python

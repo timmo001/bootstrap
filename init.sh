@@ -103,3 +103,7 @@ go mod tidy
 
 echo "running go run app/bootstrap.go"
 go run app/bootstrap.go
+
+echo "source ~/.$CURRENT_SHELL"rc""
+source ~/.$CURRENT_SHELL"rc"
+
