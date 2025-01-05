@@ -34,17 +34,6 @@ func downloadFile(url, dest string) error {
 	return cmd.Run()
 }
 
-func exists(path string) (bool, error) {
-	// Check if the path exists
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return false, nil
-	} else if err != nil {
-		return false, err
-	} else {
-		return true, nil
-	}
-}
-
 func runCmd(name string, arg ...string) error {
 	log.Infof("Running command: %s %v", name, arg)
 

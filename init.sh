@@ -3,19 +3,18 @@
 # Stop on error
 set -e
 
-GO_VERSION=1.23.4
 HOST_ARCH=$(uname -m)
+echo "Host architecture: " $HOST_ARCH
 
 # Get current shell
-#   use last part of SHELL variable so that it works for both /bin/bash and /usr/bin/zsh etc.
-CURRENT_SHELL=$(echo $SHELL | awk -F/ '{print $NF}')
+CURRENT_SHELL=$(basename $SHELL)
 echo "Current shell:     " $CURRENT_SHELL
 
-# Check if host is x86_64
-if [ $HOST_ARCH == "x86_64" ]; then
-  HOST_ARCH="amd64"
-fi
-echo "Host architecture: " $HOST_ARCH
+GO_ARCH="amd64"
+echo "Go architecture:   " $GO_ARCH
+
+GO_VERSION=1.23.4
+echo "Go version:        " $GO_VERSION
 
 # If -s flag is passed, skip init
 if [ "$1" == "-s" ]; then
@@ -30,11 +29,11 @@ else
     sudo rm -rf /usr/local/go
 
     # Install go
-    echo "Downloading go" $GO_VERSION " for " $HOST_ARCH
+    echo "Downloading go" $GO_VERSION " for " $GO_ARCH
 
-    url="https://golang.org/dl/go$GO_VERSION.linux-$HOST_ARCH.tar.gz"
+    url="https://golang.org/dl/go$GO_VERSION.linux-$GO_ARCH.tar.gz"
 
-    filename="go$GO_VERSION.linux-$HOST_ARCH.tar.gz"
+    filename="go$GO_VERSION.linux-$GO_ARCH.tar.gz"
     wget $url -O $filename
 
     echo "Installing go"
