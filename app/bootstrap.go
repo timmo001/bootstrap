@@ -340,9 +340,9 @@ func main() {
 	if err := deleteFile("fnm-install.sh"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
-  if err := runCmd("fnm", "install", "22"); err != nil {
-    log.Fatalf("error: %v", err)
-  }
+	if err := runCmd("fnm", "install", "22"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
 
 	// Install python + dependencies
 	printSeparator("Python and dependencies")
@@ -492,9 +492,9 @@ func main() {
 	if err := runCmdInDir("neovim", "sudo", "make", "install"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
-  if err := runCmd("npm", "install", "-g", "neovim"); err != nil {
-    log.Fatalf("error: %v", err)
-  }
+	if err := runCmd("npm", "install", "-g", "neovim"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
 	// if err := deleteDir("neovim"); err != nil {
 	// 	log.Fatalf("error: %v", err)
 	// }
@@ -548,6 +548,27 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 	if err := runCmd("nvim", "+PlugInstall", "+qall"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	// Install nerd fonts
+	printSeparator("Nerd Fonts")
+	if err := runCmd("sudo", "apt", "install", "fonts-firacode", "-y"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := runCmd("sudo", "apt", "install", "fonts-hack", "-y"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := updateOrCloneRepo("https://github.com/ryanoasis/nerd-fonts", "nerd-fonts"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := runCmdInDir("nerd-fonts", "bash", "install.sh"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := runCmdInDir("nerd-fonts", "sudo", "bash", "install.sh"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := runCmd("gsettings", "set", "org.gnome.desktop.interface", "monospace-font-name", "'FiraMono Nerd Font Medium 12'"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
@@ -624,7 +645,55 @@ func main() {
 			log.Fatalf("error: %v", err)
 		}
 		installedPackages = append(installedPackages, "ghostty")
+		// Set CTRL+ALT+T to open ghostty
+		if err := runCmd("gsettings", "set", "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/", "name", "'Open Ghostty'"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("gsettings", "set", "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/", "binding", "'<Primary><Alt>t'"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("gsettings", "set", "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/", "command", "'/usr/bin/ghostty'"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
 
+    // Install chrome
+		printSeparator("Google Chrome")
+		if err := downloadFile("https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb", "chrome.deb"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("sudo", "apt", "install", "./chrome.deb", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := deleteFile("chrome.deb"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+
+		// Install slack
+		printSeparator("Slack")
+		if err := runCmd("sudo", "snap", "install", "slack", "--classic"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+
+		// Install discord
+		printSeparator("Discord")
+		if err := downloadFile("https://discord.com/api/download?platform=linux&format=deb", "discord.deb"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("sudo", "apt", "install", "./discord.deb", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+
+		// Install steam
+		printSeparator("Steam")
+		if err := downloadFile("https://cdn.fastly.steamstatic.com/client/installer/steam.deb", "steam.deb"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("sudo", "apt", "install", "./steam.deb", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := deleteFile("steam.deb"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
 	}
 
 	log.Info("Bootstrapping complete.")

@@ -23,20 +23,19 @@
   - [x] Install lynx
   - [x] Install lazygit
   - [ ] Setup AWS, SSO auth and assign AWS_PROFILE
-  - [ ] Install ghostty from source
+  - [x] Install ghostty from source
   - [x] Install vs*ode from package
   - [x] Install zen browser
-  - [ ] Install chrome browser from package
-  - [ ] Install steam-installer from package
-  - [ ] Install discord from package
-  - [ ] Install slack from package
+  - [x] Install chrome browser from package
+  - [x] Install slack from package
+  - [x] Install discord from package
+  - [x] Install steam from package
   - [ ] Install sunshine and setup systemd service
   - [ ] Install moonlight client
   - [ ] Install postman
   - [ ] Install bruno
   - [ ] Setup HDR
-  - [ ] Install nerdfonts
-  - [ ] Install nerdicons
+  - [x] Install nerdfonts
   - [ ] Check for and install GoXLR-Utility
   - [ ] Setup git config
 - [ ] Write a README.md
