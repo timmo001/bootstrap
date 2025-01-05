@@ -588,6 +588,18 @@ func main() {
 		// 	log.Fatalf("error: %v", err)
 		// }
 
+		// Install ghostty
+		printSeparator("Installing Ghostty")
+		if err := runCmd("sudo", "apt", "install", "libgtk-4-dev", "libadwaita-1-dev", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := updateOrCloneRepo("https://github.com/ghostty-org/ghostty", "ghostty"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmdInDir("ghostty", "zig", "build", "-p", home+"/.local", "-Doptimize=ReleaseFast"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+
 	}
 
 	log.Info("Bootstrapping complete.")

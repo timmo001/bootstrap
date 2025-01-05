@@ -1,6 +1,7 @@
-neovim/
 *.deb
 *.tar.gz
 *.tar.xz
 *.sh
 !init.sh
+ghostty/
+neovim/
