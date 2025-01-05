@@ -1,0 +1,31 @@
+# TODO
+
+- [ ] Install go and run with script - `init.sh`
+    - [x] Get shell
+    - [x] Install go
+    - [ ] Build and run the go program
+- [ ] Write a go program to fully bootstrap
+    - [ ] Setup AWS, SSO auth and assign AWS_PROFILE
+    - [ ] Setup NodeJS and pnpm with corepack
+    - [ ] Setup Docker
+    - [ ] Setup python
+    - [ ] Setup rust
+    - [ ] Setup zig
+    - [ ] Setup brew on linux
+    - [ ] Setup nvim
+        - [ ] Install from source
+        - [ ] Clone timmo001/nvim-config to ~/.config/nvim
+    - [ ] Install ripgrep
+    - [ ] Install fzf
+    - [ ] Install [insert package that is wanted from :checkhealth for nvim]
+    - [ ] Install lazygit
+    - [ ] Check if is ubuntu server or desktop
+    - [ ] Install ghostty from source
+    - [ ] Install vs*ode from package
+    - [ ] Install zen browser from package
+    - [ ] Install chrome browser from package
+    - [ ] Install steam-installer from package
+    - [ ] Install discord from package
+    - [ ] Install slack from package
+    - [ ]  
+- [ ] Write a README.md
