@@ -77,10 +77,11 @@ else
       install_go
     fi
   fi
-
   # Source current shell rc file
+  set +e
   echo "source ~/.$CURRENT_SHELL"rc""
   source ~/.$CURRENT_SHELL"rc"
+  set -e
 
   if [ $CURRENT_SHELL != "zsh" ]; then
     echo "Install zsh"
@@ -104,6 +105,7 @@ go mod tidy
 echo "running go run app/bootstrap.go"
 go run app/bootstrap.go
 
+set +e
 echo "source ~/.$CURRENT_SHELL"rc""
 source ~/.$CURRENT_SHELL"rc"
-
+set -e
