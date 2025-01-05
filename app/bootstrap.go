@@ -47,6 +47,16 @@ func downloadFile(url, dest string) error {
 	return cmd.Run()
 }
 
+func runCmdNoInput(name string, arg ...string) error {
+	log.Infof("Running command: %s %v", name, arg)
+
+	// Run the command
+	cmd := exec.Command(name, arg...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
+}
+
 func runCmd(name string, arg ...string) error {
 	log.Infof("Running command: %s %v", name, arg)
 
@@ -117,6 +127,16 @@ func addIfMissingToFile(file, line string) error {
 		log.Infof("Added line to %s: %s", file, line)
 
 		return nil
+	}
+}
+
+func updateOrCloneRepo(repoURL, destDir string) error {
+	if _, err := os.Stat(destDir); os.IsNotExist(err) {
+		// Directory does not exist, clone the repo
+		return runCmd("git", "clone", "--depth", "1", repoURL, destDir)
+	} else {
+		// Directory exists, pull the latest changes
+		return runCmdInDir(destDir, "git", "pull")
 	}
 }
 
@@ -224,15 +244,14 @@ func main() {
 	}
 
 	// Install oh-my-zsh
-	omzDir := home + "/.oh-my-zsh"
 	if forceInstall || !isExecutableInstalled("omz") {
-		if err := deleteDir(omzDir); err != nil {
+    if err := deleteDir(home + "/.oh-my-zsh"); err != nil {
+      log.Fatalf("error: %v", err)
+    }
+    if err := downloadFile("https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh", "omz-install.sh"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
-		if err := downloadFile("https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh", "omz-install.sh"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := runCmd("zsh", "omz-install.sh"); err != nil {
+		if err := runCmdNoInput("sh", "omz-install.sh"); err != nil {
 			log.Errorf("error: %v", err)
 			if err := deleteFile("omz-install.sh"); err != nil {
 				log.Fatalf("error: %v", err)
@@ -247,17 +266,17 @@ func main() {
 
 	// Download omz plugins
 	pluginsDir := home + "/.oh-my-zsh/custom/plugins"
-	if err := runCmd("git", "clone", "--depth", "1", "https://github.com/zsh-users/zsh-autosuggestions.git", pluginsDir+"/zsh-autosuggestions"); err != nil {
-		log.Fatalf("error: %v", err)
+	if err := updateOrCloneRepo("https://github.com/zsh-users/zsh-autosuggestions.git", pluginsDir+"/zsh-autosuggestions"); err != nil {
+		log.Errorf("error: %v", err)
 	}
-	if err := runCmd("git", "clone", "--depth", "1", "https://github.com/zsh-users/zsh-syntax-highlighting.git", pluginsDir+"/zsh-syntax-highlighting"); err != nil {
-		log.Fatalf("error: %v", err)
+	if err := updateOrCloneRepo("https://github.com/zsh-users/zsh-syntax-highlighting.git", pluginsDir+"/zsh-syntax-highlighting"); err != nil {
+		log.Errorf("error: %v", err)
 	}
-	if err := runCmd("git", "clone", "--depth", "1", "https://github.com/zdharma-continuum/fast-syntax-highlighting.git", pluginsDir+"/fast-syntax-highlighting"); err != nil {
-		log.Fatalf("error: %v", err)
+	if err := updateOrCloneRepo("https://github.com/zdharma-continuum/fast-syntax-highlighting.git", pluginsDir+"/fast-syntax-highlighting"); err != nil {
+		log.Errorf("error: %v", err)
 	}
-	if err := runCmd("git", "clone", "--depth", "1", "https://github.com/marlonrichert/zsh-autocomplete.git", pluginsDir+"/zsh-autocomplete"); err != nil {
-		log.Fatalf("error: %v", err)
+	if err := updateOrCloneRepo("https://github.com/marlonrichert/zsh-autocomplete.git", pluginsDir+"/zsh-autocomplete"); err != nil {
+		log.Errorf("error: %v", err)
 	}
 
 	// Install nodejs
@@ -400,7 +419,7 @@ func main() {
 	if err := runCmd("sudo", "apt", "install", "ninja-build", "gettext", "cmake", "unzip", "curl", "build-essential", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	if err := runCmd("git", "clone", "--depth", "1", "https://github.com/neovim/neovim"); err != nil {
+	if err := updateOrCloneRepo("https://github.com/neovim/neovim", "neovim"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 	if err := runCmdInDir("neovim", "make", "CMAKE_BUILD_TYPE=Release"); err != nil {
@@ -409,9 +428,9 @@ func main() {
 	if err := runCmdInDir("neovim", "sudo", "make", "install"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	if err := deleteDir("neovim"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
+	// if err := deleteDir("neovim"); err != nil {
+	// 	log.Fatalf("error: %v", err)
+	// }
 
 	// Install ripgrep
 	if err := runCmd("sudo", "apt", "install", "ripgrep", "-y"); err != nil {
@@ -447,11 +466,11 @@ func main() {
 		}
 	}
 
-	// Install neovim
+	// Install neovim config
 	if err := deleteDir(home + "/.config/nvim"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	if err := runCmd("git", "clone", "--depth", "1", "https://github.com/timmo001/nvim-config", home+"/.config/nvim"); err != nil {
+	if err := updateOrCloneRepo("https://github.com/timmo001/nvim-config", home+"/.config/nvim"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 	if err := runCmd("nvim", "+PlugInstall", "+qall"); err != nil {
