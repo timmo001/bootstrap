@@ -84,5 +84,5 @@ fi
 echo "running go mod tidy"
 go mod tidy
 
-echo "running go run app/boostrap.go"
+echo "running go run app/bootstrap.go"
 go run app/bootstrap.go
