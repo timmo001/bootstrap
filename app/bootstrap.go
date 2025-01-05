@@ -47,6 +47,14 @@ func downloadFile(url, dest string) error {
 	return cmd.Run()
 }
 
+func existsDir(dir string) (bool, error) {
+	_, err := os.Stat(dir)
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return err == nil, err
+}
+
 func runCmdNoInput(name string, arg ...string) error {
 	log.Infof("Running command: %s %v", name, arg)
 
@@ -278,7 +286,11 @@ func main() {
 
 	// Install oh-my-zsh
 	printSeparator("oh-my-zsh")
-	if forceInstall || !isExecutableInstalled("omz") {
+	exists, err := existsDir(home + "/.oh-my-zsh")
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if forceInstall || !exists {
 		if err := deleteDir(home + "/.oh-my-zsh"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
@@ -328,6 +340,9 @@ func main() {
 	if err := deleteFile("fnm-install.sh"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
+  if err := runCmd("fnm", "install", "22"); err != nil {
+    log.Fatalf("error: %v", err)
+  }
 
 	// Install python + dependencies
 	printSeparator("Python and dependencies")
@@ -507,7 +522,7 @@ func main() {
 
 	// Install lazygit if not installed
 	printSeparator("lazygit")
-	if !isExecutableInstalled("lazygit") {
+	if forceInstall || !isExecutableInstalled("lazygit") {
 		if err := runCmd("brew", "install", "lazygit"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
@@ -515,7 +530,7 @@ func main() {
 
 	// Install lazydocker if not installed
 	printSeparator("lazydocker")
-	if !isExecutableInstalled("lazydocker") {
+	if forceInstall || !isExecutableInstalled("lazydocker") {
 		if err := runCmd("brew", "install", "lazydocker"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
@@ -562,15 +577,17 @@ func main() {
 		}
 
 		// Install vs*ode
-		printSeparator("VS C*de")
-		if err := downloadFile("https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64", "vscode.deb"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := runCmd("sudo", "apt", "install", "./vscode.deb", "-y"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := deleteFile("vscode.deb"); err != nil {
-			log.Fatalf("error: %v", err)
+		if forceInstall || !isExecutableInstalled("code") {
+			printSeparator("VS C*de")
+			if err := downloadFile("https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64", "vscode.deb"); err != nil {
+				log.Fatalf("error: %v", err)
+			}
+			if err := runCmd("sudo", "apt", "install", "./vscode.deb", "-y"); err != nil {
+				log.Fatalf("error: %v", err)
+			}
+			if err := deleteFile("vscode.deb"); err != nil {
+				log.Fatalf("error: %v", err)
+			}
 		}
 
 		// // Install postman

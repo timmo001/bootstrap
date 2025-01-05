@@ -5,6 +5,6 @@ plugins=(git zsh-autosuggestions zsh-syntax-highlighting fast-syntax-highlightin
 source $ZSH/oh-my-zsh.sh
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$HOME/.local/share/fnm:$PATH
-eval "`fnm env`"
+eval "$(fnm env --use-on-cd --shell zsh)"
 source $HOME/.cargo/env
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
