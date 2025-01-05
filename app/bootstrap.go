@@ -32,9 +32,14 @@ func main() {
 	}
 
   // Exit if the shell is not zsh
-  if os.Getenv("SHELL") != "/bin/zsh" {
+  shell := os.Getenv("SHELL")
+  if strings.Contains(shell, "zsh") {
     log.Fatalf("Please restart your shell and run the script again in zsh to continue.")
   }
+
+  //
+  // Applications
+  //
 
   // Install curl
   if err := runCmd("sudo", "apt", "install", "curl", "-y"); err != nil {
@@ -43,6 +48,21 @@ func main() {
 
   // Install git
   if err := runCmd("sudo", "apt", "install", "git", "-y"); err != nil {
+    log.Fatalf("error: %v", err)
+  }
+
+  // Install ruby
+  if err := runCmd("sudo", "apt", "install", "ruby", "-y"); err != nil {
+    log.Fatalf("error: %v", err)
+  }
+
+
+  //
+  // Tools
+  //
+
+  // Install markdownlint
+  if err := runCmd("sudo", "gem", "install", "mdl"); err != nil {
     log.Fatalf("error: %v", err)
   }
 

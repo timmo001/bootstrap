@@ -3,16 +3,17 @@
 - [ ] Install go and run with script - `init.sh`
     - [x] Get shell
     - [x] Install go
-    - [ ] Build and run the go program
+    - [x] Build and run the go program
 - [ ] Write a go program to fully bootstrap
     - [x] Update apt
-    - [ ] Setup zsh
+    - [x] Setup zsh
     - [ ] Setup oh-my-zsh
     - [ ] Setup NodeJS and pnpm with corepack
     - [ ] Setup Docker
     - [ ] Setup python
     - [ ] Setup rust
     - [ ] Setup zig
+    - [x] Setup ruby
     - [ ] Setup brew on linux
     - [ ] Setup nvim
         - [ ] Install from source
