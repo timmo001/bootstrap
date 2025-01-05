@@ -5,8 +5,9 @@
     - [x] Install go
     - [ ] Build and run the go program
 - [ ] Write a go program to fully bootstrap
-    - [ ] Update apt
-    - [ ] Setup AWS, SSO auth and assign AWS_PROFILE
+    - [x] Update apt
+    - [ ] Setup zsh
+    - [ ] Setup oh-my-zsh
     - [ ] Setup NodeJS and pnpm with corepack
     - [ ] Setup Docker
     - [ ] Setup python
@@ -20,6 +21,7 @@
     - [ ] Install fzf
     - [ ] Install [insert package that is wanted from :checkhealth for nvim]
     - [ ] Install lazygit
+    - [ ] Setup AWS, SSO auth and assign AWS_PROFILE
     - [ ] Check if is ubuntu server or desktop
     - [ ] Install ghostty from source
     - [ ] Install vs*ode from package
