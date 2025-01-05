@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/log"
@@ -33,7 +34,7 @@ func main() {
 
   // Exit if the shell is not zsh
   shell := os.Getenv("SHELL")
-  if strings.Contains(shell, "zsh") {
+  if strings.Contains(shell, "zsh") == false {
     log.Fatalf("Please restart your shell and run the script again in zsh to continue.")
   }
 
