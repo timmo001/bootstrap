@@ -335,16 +335,16 @@ func main() {
 	// Download omz plugins
 	printSeparator("Downloading oh-my-zsh plugins")
 	pluginsDir := home + "/.oh-my-zsh/custom/plugins"
-	if err := updateOrCloneRepo("https://github.com/zsh-users/zsh-autosuggestions.git", pluginsDir+"/zsh-autosuggestions"); err != nil {
+	if err := updateOrCloneRepo("git@github.com:zsh-users/zsh-autosuggestions.git", pluginsDir+"/zsh-autosuggestions"); err != nil {
 		log.Errorf("error: %v", err)
 	}
-	if err := updateOrCloneRepo("https://github.com/zsh-users/zsh-syntax-highlighting.git", pluginsDir+"/zsh-syntax-highlighting"); err != nil {
+	if err := updateOrCloneRepo("git@github.com:zsh-users/zsh-syntax-highlighting.git", pluginsDir+"/zsh-syntax-highlighting"); err != nil {
 		log.Errorf("error: %v", err)
 	}
-	if err := updateOrCloneRepo("https://github.com/zdharma-continuum/fast-syntax-highlighting.git", pluginsDir+"/fast-syntax-highlighting"); err != nil {
+	if err := updateOrCloneRepo("git@github.com:zdharma-continuum/fast-syntax-highlighting.git", pluginsDir+"/fast-syntax-highlighting"); err != nil {
 		log.Errorf("error: %v", err)
 	}
-	if err := updateOrCloneRepo("https://github.com/marlonrichert/zsh-autocomplete.git", pluginsDir+"/zsh-autocomplete"); err != nil {
+	if err := updateOrCloneRepo("git@github.com:marlonrichert/zsh-autocomplete.git", pluginsDir+"/zsh-autocomplete"); err != nil {
 		log.Errorf("error: %v", err)
 	}
 
@@ -502,7 +502,7 @@ func main() {
 	if err := runCmd("sudo", "apt", "install", "ninja-build", "gettext", "cmake", "unzip", "curl", "build-essential", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	if err := updateOrCloneRepo("https://github.com/neovim/neovim", "neovim"); err != nil {
+	if err := updateOrCloneRepo("git@github.com:neovim/neovim", "neovim"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 	if err := runCmdInDir("neovim", "make", "CMAKE_BUILD_TYPE=Release"); err != nil {
@@ -563,7 +563,7 @@ func main() {
 	if err := deleteDir(home + "/.config/nvim"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	if err := updateOrCloneRepo("https://github.com/timmo001/nvim-config", home+"/.config/nvim"); err != nil {
+	if err := updateOrCloneRepo("git@github.com:timmo001/nvim-config", home+"/.config/nvim"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 	if err := runCmd("nvim", "+PlugInstall", "+qall"); err != nil {
