@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env zsh
 
 # Stop on error
 set -e
@@ -17,7 +17,7 @@ GO_VERSION=1.23.4
 echo "Go version:        " $GO_VERSION
 
 # If -s flag is passed, skip init
-if [ "$1" == "-s" ]; then
+if [[ "$1" == "-s" ]]; then
   echo "Skipping init"
 else
   echo "Setup rc files"
