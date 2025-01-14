@@ -169,11 +169,15 @@ func main() {
 	// Ask if the user is running on a desktop environment
 	printSeparator("Checking if running on a desktop environment")
 	isDesktop := false
+	isWSL := false
 	form := huh.NewForm(
 		huh.NewGroup(
 			huh.NewConfirm().
 				Title("Are you running on a desktop environment?").
 				Value(&isDesktop),
+			huh.NewConfirm().
+				Title("Are you on WSL? 🤮").
+				Value(&isWSL),
 		),
 	)
 	if err := form.Run(); err != nil {
@@ -411,29 +415,31 @@ func main() {
 	installedPackages = append(installedPackages, "zig")
 
 	// Install docker
-	printSeparator("Docker")
-	if forceInstall || !isExecutableInstalled("docker") {
-		if err := downloadFile("https://get.docker.com", "docker-install.sh"); err != nil {
-			log.Fatalf("error: %v", err)
+	if !isWSL {
+		printSeparator("Docker")
+		if forceInstall || !isExecutableInstalled("docker") {
+			if err := downloadFile("https://get.docker.com", "docker-install.sh"); err != nil {
+				log.Fatalf("error: %v", err)
+			}
+			if err := runCmd("chmod", "+x", "docker-install.sh"); err != nil {
+				log.Fatalf("error: %v", err)
+			}
+			if err := runCmd("./docker-install.sh"); err != nil {
+				log.Fatalf("error: %v", err)
+			}
+			if err := deleteFile("docker-install.sh"); err != nil {
+				log.Fatalf("error: %v", err)
+			}
+			installedPackages = append(installedPackages, "docker")
 		}
-		if err := runCmd("chmod", "+x", "docker-install.sh"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := runCmd("./docker-install.sh"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := deleteFile("docker-install.sh"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		installedPackages = append(installedPackages, "docker")
-	}
 
-	// Install docker compose
-	printSeparator("Docker Compose")
-	if err := runCmd("sudo", "apt", "install", "docker-compose-plugin", "-y"); err != nil {
-		log.Fatalf("error: %v", err)
+		// Install docker compose
+		printSeparator("Docker Compose")
+		if err := runCmd("sudo", "apt", "install", "docker-compose-plugin", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		installedPackages = append(installedPackages, "docker-compose-plugin")
 	}
-	installedPackages = append(installedPackages, "docker-compose-plugin")
 
 	// Install homebrew
 	printSeparator("Homebrew")
@@ -638,9 +644,9 @@ func main() {
 		if err := downloadFile("https://dl.pstmn.io/download/latest/linux_64", "postman.tar.gz"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
-    if err := runCmd("sudo", "rm", "-rf", "/usr/bin/postman"); err != nil {
-      log.Fatalf("error: %v", err)
-    }
+		if err := runCmd("sudo", "rm", "-rf", "/usr/bin/postman"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
 		if err := runCmd("sudo", "rm", "-rf", "/opt/Postman"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
