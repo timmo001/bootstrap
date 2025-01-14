@@ -8,3 +8,5 @@ export PATH=$HOME/.local/share/fnm:$PATH
 eval "$(fnm env --use-on-cd --shell zsh)"
 source $HOME/.cargo/env
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+alias ls="ls -la --color=always"
+alias lg="lazygit"
