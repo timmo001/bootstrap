@@ -708,28 +708,28 @@ func main() {
 		if err := runCmd("gsettings", "set", "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/", "command", "'/usr/bin/ghostty'"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
-		// Scan the ~/.config/ghostty/config and for differences with ghostty-config
-		ghosttyConfigPath := home + "/.config/ghostty/config"
-		// Open ./ghostty-config
-		f, err := os.OpenFile("./ghostty-config", os.O_RDONLY, 0644)
-		if err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		defer f.Close()
-		log.Infof("Reading %s", f.Name())
-		// Read the file line by line using scanner
-		scanner := bufio.NewScanner(f)
-		for scanner.Scan() {
-			// Read the file line by line
-			line := scanner.Text()
+		// // Scan the ~/.config/ghostty/config and for differences with ghostty-config
+		// ghosttyConfigPath := home + "/.config/ghostty/config"
+		// // Open ./ghostty-config
+		// f, err := os.OpenFile("./ghostty-config", os.O_RDONLY, 0644)
+		// if err != nil {
+		// 	log.Fatalf("error: %v", err)
+		// }
+		// defer f.Close()
+		// log.Infof("Reading %s", f.Name())
+		// // Read the file line by line using scanner
+		// scanner := bufio.NewScanner(f)
+		// for scanner.Scan() {
+		// 	// Read the file line by line
+		// 	line := scanner.Text()
 
-			log.Infof("Line: %s", line)
+		// 	log.Infof("Line: %s", line)
 
-			// Add the line to ~/.zshrc
-			if err := addIfMissingToFile(ghosttyConfigPath, line); err != nil {
-				log.Fatalf("error: %v", err)
-			}
-		}
+		// 	// Add the line to ~/.zshrc
+		// 	if err := addIfMissingToFile(ghosttyConfigPath, line); err != nil {
+		// 		log.Fatalf("error: %v", err)
+		// 	}
+		// }
 
 		// Install chrome
 		printSeparator("Google Chrome")
