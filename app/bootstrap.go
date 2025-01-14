@@ -170,15 +170,27 @@ func main() {
 	printSeparator("Checking if running on a desktop environment")
 	isDesktop := false
 	isWSL := false
+	email := "aidan@timmo.dev"
+	name := "Aidan Timson"
 	form := huh.NewForm(
 		huh.NewGroup(
 			huh.NewConfirm().
 				Title("Are you running on a desktop environment?").
 				Value(&isDesktop),
+		).Title("Desktop"),
+		huh.NewGroup(
 			huh.NewConfirm().
 				Title("Are you on WSL? 🤮").
 				Value(&isWSL),
-		),
+		).Title("WSL"),
+		huh.NewGroup(
+			huh.NewInput().
+				Title("What is your email?").
+				Value(&email),
+			huh.NewInput().
+				Title("What is your name?").
+				Value(&name),
+		).Title("Git config"),
 	)
 	if err := form.Run(); err != nil {
 		log.Fatalf("error: %v", err)
@@ -252,6 +264,14 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 	err = runCmd("git", "config", "--global", "push.default", "current")
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	err = runCmd("git", "config", "--global", "user.email", email)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	err = runCmd("git", "config", "--global", "user.name", name)
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
