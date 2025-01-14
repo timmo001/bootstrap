@@ -606,7 +606,7 @@ func main() {
 	if err := runCmd("sudo", "apt", "install", "bat", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	if err := runCmd("ln", "-s", "/usr/bin/batcat", "/usr/bin/bat"); err != nil {
+	if err := runCmd("sudo", "ln", "-s", "/usr/bin/batcat", "/usr/bin/bat"); err != nil {
 		log.Errorf("error: %v", err)
 	}
 
