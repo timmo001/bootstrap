@@ -305,7 +305,7 @@ func main() {
 
 	// Setup dotfiles
 	printSeparator("Setting up dotfiles")
-	if err := updateOrCloneRepo("git@github.com:timmo001/dotfiles", home+"/dotfiles"); err != nil {
+	if err := updateOrCloneRepo("git@github.com:timmo001/dotfiles", home+"/.config/dotfiles"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 	if err := runCmdInDir(home+"/dotfiles", "./install.sh"); err != nil {
