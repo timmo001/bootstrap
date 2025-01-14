@@ -303,6 +303,15 @@ func main() {
 		installedPackages = append(installedPackages, "gh")
 	}
 
+	// Setup dotfiles
+	printSeparator("Setting up dotfiles")
+	if err := updateOrCloneRepo("git@github.com@timmo001/dotfiles", home+"/dotfiles"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := runCmdInDir(home+"/dotfiles", "./install.sh"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
 	// Install ruby
 	printSeparator("ruby")
 	if forceInstall || !isExecutableInstalled("ruby") {
