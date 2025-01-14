@@ -524,6 +524,12 @@ func main() {
 	// 	log.Fatalf("error: %v", err)
 	// }
 
+	// Install ascii-image-converter
+	printSeparator("ascii-image-converter")
+	if err := runCmd("go", "install", "github.com/TheZoraiz/ascii-image-converter@latest"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
 	// Install ripgrep
 	printSeparator("ripgrep")
 	if err := runCmd("sudo", "apt", "install", "ripgrep", "-y"); err != nil {
