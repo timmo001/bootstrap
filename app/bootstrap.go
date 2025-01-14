@@ -542,6 +542,18 @@ func main() {
 	// 	log.Fatalf("error: %v", err)
 	// }
 
+	// // Install neovim config
+	// printSeparator("Neovim config")
+	// if err := deleteDir(home + "/.config/nvim"); err != nil {
+	// 	log.Fatalf("error: %v", err)
+	// }
+	// if err := updateOrCloneRepo("git@github.com:timmo001/nvim-config", home+"/.config/nvim"); err != nil {
+	// 	log.Fatalf("error: %v", err)
+	// }
+	if err := runCmd("nvim", "+PlugInstall", "+qall"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
 	// Install ascii-image-converter
 	printSeparator("ascii-image-converter")
 	if err := runCmd("go", "install", "github.com/TheZoraiz/ascii-image-converter@latest"); err != nil {
@@ -588,17 +600,6 @@ func main() {
 		}
 	}
 
-	// Install neovim config
-	printSeparator("Neovim config")
-	if err := deleteDir(home + "/.config/nvim"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := updateOrCloneRepo("git@github.com:timmo001/nvim-config", home+"/.config/nvim"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := runCmd("nvim", "+PlugInstall", "+qall"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
 
 	// Install nerd fonts
 	printSeparator("Nerd Fonts")
