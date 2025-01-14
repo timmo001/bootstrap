@@ -477,31 +477,31 @@ func main() {
 		installedPackages = append(installedPackages, "homebrew")
 	}
 
-	// Setup .zshrc
-	printSeparator("Setting up .zshrc")
-	zshrcPath := home + "/.zshrc"
-	log.Infof("Setting up %s", zshrcPath)
+	// // Setup .zshrc
+	// printSeparator("Setting up .zshrc")
+	// zshrcPath := home + "/.zshrc"
+	// log.Infof("Setting up %s", zshrcPath)
 
-	// Open ./.zshrc
-	f, err := os.OpenFile("./.zshrc", os.O_RDONLY, 0644)
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	defer f.Close()
-	log.Infof("Reading %s", f.Name())
-	// Read the file line by line using scanner
-	scanner := bufio.NewScanner(f)
-	for scanner.Scan() {
-		// Read the file line by line
-		line := scanner.Text()
+	// // Open ./.zshrc
+	// f, err := os.OpenFile("./.zshrc", os.O_RDONLY, 0644)
+	// if err != nil {
+	// 	log.Fatalf("error: %v", err)
+	// }
+	// defer f.Close()
+	// log.Infof("Reading %s", f.Name())
+	// // Read the file line by line using scanner
+	// scanner := bufio.NewScanner(f)
+	// for scanner.Scan() {
+	// 	// Read the file line by line
+	// 	line := scanner.Text()
 
-		log.Infof("Line: %s", line)
+	// 	log.Infof("Line: %s", line)
 
-		// Add the line to ~/.zshrc
-		if err := addIfMissingToFile(zshrcPath, line); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-	}
+	// 	// Add the line to ~/.zshrc
+	// 	if err := addIfMissingToFile(zshrcPath, line); err != nil {
+	// 		log.Fatalf("error: %v", err)
+	// 	}
+	// }
 
 	// Enable yarn
 	printSeparator("Enabling Yarn")
