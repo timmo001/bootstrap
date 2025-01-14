@@ -632,7 +632,6 @@ func main() {
 		}
 	}
 
-
 	// Install nerd fonts
 	printSeparator("Nerd Fonts")
 	if err := runCmd("sudo", "apt", "install", "fonts-firacode", "-y"); err != nil {
