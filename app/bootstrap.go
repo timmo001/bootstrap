@@ -352,6 +352,24 @@ func main() {
 		log.Errorf("error: %v", err)
 	}
 
+	// Install starship
+	printSeparator("starship")
+	if forceInstall || !isExecutableInstalled("starship") {
+		if err := runCmd("curl", "-fsSL", "https://starship.rs/install.sh", "-o", "starship-install.sh"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("chmod", "+x", "starship-install.sh"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("./starship-install.sh", "--yes"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := deleteFile("starship-install.sh"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		installedPackages = append(installedPackages, "starship")
+	}
+
 	// Install nodejs
 	printSeparator("Node.js")
 	if err := downloadFile("https://fnm.vercel.app/install", "fnm-install.sh"); err != nil {
