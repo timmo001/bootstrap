@@ -801,14 +801,16 @@ func main() {
 
 		// Install steam
 		printSeparator("Steam")
-		if err := downloadFile("https://cdn.fastly.steamstatic.com/client/installer/steam.deb", "steam.deb"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := runCmd("sudo", "apt", "install", "./steam.deb", "-y"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := deleteFile("steam.deb"); err != nil {
-			log.Fatalf("error: %v", err)
+		if forceInstall || !isExecutableInstalled("steam") {
+			if err := downloadFile("https://cdn.fastly.steamstatic.com/client/installer/steam.deb", "steam.deb"); err != nil {
+				log.Fatalf("error: %v", err)
+			}
+			if err := runCmd("sudo", "apt", "install", "./steam.deb", "-y"); err != nil {
+				log.Fatalf("error: %v", err)
+			}
+			if err := deleteFile("steam.deb"); err != nil {
+				log.Fatalf("error: %v", err)
+			}
 		}
 
 		// Install sunshine
