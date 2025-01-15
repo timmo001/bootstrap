@@ -303,9 +303,18 @@ func main() {
 		installedPackages = append(installedPackages, "gh")
 	}
 
+	// Install stow
+	printSeparator("stow")
+	if forceInstall || !isExecutableInstalled("stow") {
+		if err := runCmd("sudo", "apt", "install", "stow", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		installedPackages = append(installedPackages, "stow")
+	}
+
 	// Setup dotfiles
 	printSeparator("Setting up dotfiles")
-	dotfilesPath := home+"/.config/dotfiles"
+	dotfilesPath := home + "/.config/dotfiles"
 	if err := updateOrCloneRepo("git@github.com:timmo001/dotfiles", dotfilesPath); err != nil {
 		log.Fatalf("error: %v", err)
 	}
