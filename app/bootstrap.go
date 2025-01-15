@@ -831,21 +831,21 @@ func main() {
 			log.Fatalf("error: %v", err)
 		}
 
-		// Check for GoXLR and install GoXLR-Utility
-		if _, err := os.Stat("/dev/snd/GoXLR"); err == nil {
-			if forceInstall || !isExecutableInstalled("goxlr-utility") {
-				printSeparator("GoXLR-Utility")
-				if err := downloadFile("https://github.com/GoXLR-on-Linux/goxlr-utility/releases/download/v1.1.4/goxlr-utility_1.1.4-1_amd64.deb", "goxlr-utility.deb"); err != nil {
-					log.Fatalf("error: %v", err)
-				}
-				if err := runCmd("sudo", "apt", "install", "./goxlr-utility.deb", "-y"); err != nil {
-					log.Fatalf("error: %v", err)
-				}
-				if err := deleteFile("goxlr-utility.deb"); err != nil {
-					log.Fatalf("error: %v", err)
-				}
-			}
-		}
+		// // Check for GoXLR and install GoXLR-Utility
+		// if _, err := os.Stat("/dev/snd/GoXLR"); err == nil {
+		// 	if forceInstall || !isExecutableInstalled("goxlr-utility") {
+		// 		printSeparator("GoXLR-Utility")
+		// 		if err := downloadFile("https://github.com/GoXLR-on-Linux/goxlr-utility/releases/download/v1.1.4/goxlr-utility_1.1.4-1_amd64.deb", "goxlr-utility.deb"); err != nil {
+		// 			log.Fatalf("error: %v", err)
+		// 		}
+		// 		if err := runCmd("sudo", "apt", "install", "./goxlr-utility.deb", "-y"); err != nil {
+		// 			log.Fatalf("error: %v", err)
+		// 		}
+		// 		if err := deleteFile("goxlr-utility.deb"); err != nil {
+		// 			log.Fatalf("error: %v", err)
+		// 		}
+		// 	}
+		// }
 	}
 
 	log.Info("Bootstrapping complete.")
