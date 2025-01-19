@@ -850,7 +850,7 @@ func main() {
 		// Install hyprland
 		printSeparator("Hyprland")
 		if forceInstall || !isExecutableInstalled("hyprland") {
-			if err := runCmd("sudo", "apt", "install", "hyprland hyprland-backgrounds wofi wofi-pass wl-clipboard pseudo libgtk-4-dev", "-y"); err != nil {
+			if err := runCmd("sudo", "apt", "install", "hyprland hyprland-backgrounds wofi wofi-pass wl-clipboard pseudo libgtk-4-dev waybar", "-y"); err != nil {
 				log.Fatalf("error: %v", err)
 			}
 		}
