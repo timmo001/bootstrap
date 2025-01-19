@@ -854,6 +854,14 @@ func main() {
 				log.Fatalf("error: %v", err)
 			}
 		}
+
+		// Install flameshot
+		printSeparator("Flameshot")
+		if forceInstall || !isExecutableInstalled("flameshot") {
+			if err := runCmd("sudo", "apt", "install", "flameshot", "-y"); err != nil {
+				log.Fatalf("error: %v", err)
+			}
+		}
 	}
 
 	log.Info("Bootstrapping complete.")
