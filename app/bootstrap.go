@@ -863,6 +863,18 @@ func main() {
 		// 	}
 		// }
 
+		// Install grimblast
+		printSeparator("Grimblast")
+		if err := updateOrCloneRepo("git@github.com:hyprwm/contrib", "hyprwm-contrib"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmdInDir("hyprwm-contrib/grimblast", "sudo", "make", "install"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("sudo", "apt", "install", "grim", "slurp", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+
 	}
 
 	log.Info("Bootstrapping complete.")
