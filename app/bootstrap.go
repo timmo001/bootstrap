@@ -717,7 +717,7 @@ func main() {
 			log.Fatalf("error: %v", err)
 		}
 		if err := runCmd("sudo", "tar", "-xzf", "postman.tar.gz", "-C", "/opt"); err != nil {
-			log.Fatalf("error: %v", err)
+
 		}
 		if err := runCmd("sudo", "ln", "-s", "/opt/Postman/Postman", "/usr/bin/postman"); err != nil {
 			log.Fatalf("error: %v", err)
@@ -855,13 +855,14 @@ func main() {
 			}
 		}
 
-		// Install flameshot
-		printSeparator("Flameshot")
-		if forceInstall || !isExecutableInstalled("flameshot") {
-			if err := runCmd("sudo", "apt", "install", "flameshot", "-y"); err != nil {
-				log.Fatalf("error: %v", err)
-			}
-		}
+		// // Install flameshot
+		// printSeparator("Flameshot")
+		// if forceInstall || !isExecutableInstalled("flameshot") {
+		// 	if err := runCmd("sudo", "apt", "install", "flameshot", "-y"); err != nil {
+		// 		log.Fatalf("error: %v", err)
+		// 	}
+		// }
+
 	}
 
 	log.Info("Bootstrapping complete.")
