@@ -846,6 +846,9 @@ func main() {
 		// 		}
 		// 	}
 		// }
+
+		// Install hyprland
+		printSeparator("Hyprland")
 	}
 
 	log.Info("Bootstrapping complete.")
