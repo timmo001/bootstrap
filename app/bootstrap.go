@@ -849,10 +849,8 @@ func main() {
 
 		// Install hyprland
 		printSeparator("Hyprland")
-		if forceInstall || !isExecutableInstalled("hyprland") {
-			if err := runCmd("sudo", "apt", "install", "hyprland", "hyprland-backgrounds", "wofi", "wofi-pass", "wl-clipboard", "pseudo", "libgtk-4-dev", "waybar", "fonts-font-awesome", "clang-tidy", "gobject-introspection", "libdbusmenu-gtk3-dev", "libevdev-dev", "libfmt-dev", "libgirepository1.0-dev", "libgtk-3-dev", "libgtkmm-3.0-dev", "libinput-dev", "libjsoncpp-dev", "libmpdclient-dev", "libnl-3-dev", "libnl-genl-3-dev", "libpulse-dev", "libsigc++-2.0-dev", "libspdlog-dev", "libwayland-dev", "scdoc", "upower", "libxkbregistry-dev", "-y"); err != nil {
-				log.Fatalf("error: %v", err)
-			}
+		if err := runCmd("sudo", "apt", "install", "hyprland", "hyprland-backgrounds", "wofi", "wofi-pass", "wl-clipboard", "pseudo", "libgtk-4-dev", "waybar", "fonts-font-awesome", "clang-tidy", "gobject-introspection", "libdbusmenu-gtk3-dev", "libevdev-dev", "libfmt-dev", "libgirepository1.0-dev", "libgtk-3-dev", "libgtkmm-3.0-dev", "libinput-dev", "libjsoncpp-dev", "libmpdclient-dev", "libnl-3-dev", "libnl-genl-3-dev", "libpulse-dev", "libsigc++-2.0-dev", "libspdlog-dev", "libwayland-dev", "scdoc", "upower", "libxkbregistry-dev", "sway-notification-center", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
 		}
 
 		// // Install flameshot
@@ -872,6 +870,18 @@ func main() {
 			log.Fatalf("error: %v", err)
 		}
 		if err := runCmd("sudo", "apt", "install", "grim", "slurp", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+
+		// Install hyprlock
+		printSeparator("Hyprlock")
+		// if err := downloadFile("https://github.com/JaKooLit/Ubuntu-Hyprland/raw/refs/heads/24.10/install-scripts/hyprlock.sh", "hyprlock.sh"); err != nil {
+		// 	log.Fatalf("error: %v", err)
+		// }
+		// if err := runCmd("chmod", "+x", "hyprlock.sh"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := runCmd("./hyprlock.sh"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 
