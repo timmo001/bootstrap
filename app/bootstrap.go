@@ -874,16 +874,16 @@ func main() {
 		}
 
 		// Install hyprlock
-		printSeparator("Hyprlock")
+		// printSeparator("Hyprlock")
 		// if err := downloadFile("https://github.com/JaKooLit/Ubuntu-Hyprland/raw/refs/heads/24.10/install-scripts/hyprlock.sh", "hyprlock.sh"); err != nil {
 		// 	log.Fatalf("error: %v", err)
 		// }
 		// if err := runCmd("chmod", "+x", "hyprlock.sh"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := runCmd("./hyprlock.sh"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
+		// 	log.Fatalf("error: %v", err)
+		// }
+		// if err := runCmd("./hyprlock.sh"); err != nil {
+		// 	log.Fatalf("error: %v", err)
+		// }
 
 	}
 
