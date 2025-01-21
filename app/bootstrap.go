@@ -661,7 +661,22 @@ func main() {
 	}
 	if err := runCmd("gsettings", "set", "org.gnome.desktop.interface", "monospace-font-name", "'FiraMono Nerd Font Medium 13'"); err != nil {
 		log.Fatalf("error: %v", err)
-	}
+  }
+
+  // Bun
+  printSeparator("Bun")
+  if err := downloadFile("https://bun.sh/install", "bun-install.sh"); err != nil {
+    log.Fatalf("error: %v", err)
+  }
+  if err := runCmd("chmod", "+x", "bun-install.sh"); err != nil {
+    log.Fatalf("error: %v", err)
+  }
+  if err := runCmd("./bun-install.sh"); err != nil {
+    log.Fatalf("error: %v", err)
+  }
+  if err := deleteFile("bun-install.sh"); err != nil {
+    log.Fatalf("error: %v", err)
+  }
 
 	log.Infof("isDesktop: %v", isDesktop)
 
