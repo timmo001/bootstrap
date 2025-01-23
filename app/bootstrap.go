@@ -888,6 +888,12 @@ func main() {
 			log.Fatalf("error: %v", err)
 		}
 
+		// Install swaybg
+		printSeparator("swaybg")
+		if err := runCmd("sudo", "apt", "install", "swaybg", "-y"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+
 		// Install hyprlock
 		// printSeparator("Hyprlock")
 		// if err := downloadFile("https://github.com/JaKooLit/Ubuntu-Hyprland/raw/refs/heads/24.10/install-scripts/hyprlock.sh", "hyprlock.sh"); err != nil {
