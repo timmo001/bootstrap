@@ -661,22 +661,22 @@ func main() {
 	}
 	if err := runCmd("gsettings", "set", "org.gnome.desktop.interface", "monospace-font-name", "'FiraMono Nerd Font Medium 13'"); err != nil {
 		log.Fatalf("error: %v", err)
-  }
+	}
 
-  // Bun
-  printSeparator("Bun")
-  if err := downloadFile("https://bun.sh/install", "bun-install.sh"); err != nil {
-    log.Fatalf("error: %v", err)
-  }
-  if err := runCmd("chmod", "+x", "bun-install.sh"); err != nil {
-    log.Fatalf("error: %v", err)
-  }
-  if err := runCmd("./bun-install.sh"); err != nil {
-    log.Fatalf("error: %v", err)
-  }
-  if err := deleteFile("bun-install.sh"); err != nil {
-    log.Fatalf("error: %v", err)
-  }
+	// Bun
+	printSeparator("Bun")
+	if err := downloadFile("https://bun.sh/install", "bun-install.sh"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := runCmd("chmod", "+x", "bun-install.sh"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := runCmd("./bun-install.sh"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := deleteFile("bun-install.sh"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
 
 	log.Infof("isDesktop: %v", isDesktop)
 
@@ -864,7 +864,7 @@ func main() {
 
 		// Install hyprland
 		printSeparator("Hyprland")
-		if err := runCmd("sudo", "apt", "install", "hyprland", "hyprland-backgrounds", "wofi", "wofi-pass", "wl-clipboard", "pseudo", "libgtk-4-dev", "waybar", "fonts-font-awesome", "clang-tidy", "gobject-introspection", "libdbusmenu-gtk3-dev", "libevdev-dev", "libfmt-dev", "libgirepository1.0-dev", "libgtk-3-dev", "libgtkmm-3.0-dev", "libinput-dev", "libjsoncpp-dev", "libmpdclient-dev", "libnl-3-dev", "libnl-genl-3-dev", "libpulse-dev", "libsigc++-2.0-dev", "libspdlog-dev", "libwayland-dev", "scdoc", "upower", "libxkbregistry-dev", "sway-notification-center", "-y"); err != nil {
+		if err := runCmd("sudo", "apt", "install", "hyprland", "hyprland-backgrounds", "wofi", "wofi-pass", "wl-clipboard", "lib32-nvidia-utils", "pseudo", "libgtk-4-dev", "waybar", "fonts-font-awesome", "clang-tidy", "gobject-introspection", "libdbusmenu-gtk3-dev", "libevdev-dev", "libfmt-dev", "libgirepository1.0-dev", "libgtk-3-dev", "libgtkmm-3.0-dev", "libinput-dev", "libjsoncpp-dev", "libmpdclient-dev", "libnl-3-dev", "libnl-genl-3-dev", "libpulse-dev", "libsigc++-2.0-dev", "libspdlog-dev", "libwayland-dev", "scdoc", "upower", "libxkbregistry-dev", "sway-notification-center", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 
