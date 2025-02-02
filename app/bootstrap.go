@@ -103,6 +103,23 @@ func main() {
 		installedPackages = append(installedPackages, "curl")
 	}
 
+	// Setup flatpak and flathub
+	u.PrintSeparator("Setting up flatpak and flathub")
+	if err := u.RunCmd("sudo", "apt", "install", "flatpak", "-y"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := u.RunCmd("flatpak", "remote-add", "--if-not-exists", "flathub", "https://flathub.org/repo/flathub.flatpakrepo"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := u.RunCmd("sudo", "apt", "install", "gnome-software-plugin-flatpak", "-y"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	// flatpak install flathub com.saivert.pwvucontrol
+  if err := u.RunCmd("flatpak", "install", "flathub", "com.saivert.pwvucontrol", "-y"); err != nil {
+    log.Fatalf("error: %v", err)
+  }
+
 	// Install git
 	u.PrintSeparator("git")
 	if forceInstall || !u.IsExecutableInstalled("git") {
@@ -545,18 +562,6 @@ func main() {
 		// Install gnome-tweaks and gnome-shell-extensions
 		u.PrintSeparator("gnome-tweaks and gnome-shell-extensions")
 		if err := u.RunCmd("sudo", "apt", "install", "gnome-tweaks", "gnome-shell-extensions", "-y"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-
-		// Setup flatpak and flathub
-		u.PrintSeparator("Setting up flatpak and flathub")
-		if err := u.RunCmd("sudo", "apt", "install", "flatpak", "-y"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := u.RunCmd("flatpak", "remote-add", "--if-not-exists", "flathub", "https://flathub.org/repo/flathub.flatpakrepo"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := u.RunCmd("sudo", "apt", "install", "gnome-software-plugin-flatpak", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 
