@@ -728,6 +728,23 @@ func main() {
 			log.Fatalf("error: %v", err)
 		}
 
+		u.PrintSeparator("Catppuccin Cursors")
+		if err := u.DownloadFile("https://github.com/catppuccin/cursors/releases/download/v1.0.2/catppuccin-mocha-dark-cursors.zip", "catppuccin-mocha-dark-cursors.zip"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := u.RunCmd("sudo", "mkdir", "-p", "/usr/share/icons"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := u.RunCmd("sudo", "unzip", "catppuccin-mocha-dark-cursors.zip", "-d", "/usr/share/icons"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := u.RunCmd("gsettings", "set", "org.gnome.desktop.interface", "cursor-theme", "'catppuccin-mocha-dark-cursors'"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+		if err := u.RunCmd("gsettings", "set", "org.gnome.desktop.interface", "cursor-size", "32"); err != nil {
+			log.Fatalf("error: %v", err)
+		}
+
 		// // Install flameshot
 		// u.PrintSeparator("Flameshot")
 		// if forceInstall || !isExecutableInstalled("flameshot") {
