@@ -115,7 +115,14 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 
-	// flatpak install flathub com.saivert.pwvucontrol
+  // Install pipewire and wireplumber
+  u.PrintSeparator("pipewire and wireplumber")
+  if err := u.RunCmd("sudo", "apt", "install", "pipewire", "wireplumber", "-y"); err != nil {
+    log.Fatalf("error: %v", err)
+  }
+
+  // Install pwvucontrol
+  u.PrintSeparator("pwvucontrol")
   if err := u.RunCmd("flatpak", "install", "flathub", "com.saivert.pwvucontrol", "-y"); err != nil {
     log.Fatalf("error: %v", err)
   }
