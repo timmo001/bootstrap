@@ -742,7 +742,7 @@ func main() {
 		if err := u.RunCmd("gsettings", "set", "org.gnome.desktop.interface", "cursor-theme", "'catppuccin-mocha-dark-cursors'"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
-		if err := u.RunCmd("gsettings", "set", "org.gnome.desktop.interface", "cursor-size", "32"); err != nil {
+		if err := u.RunCmd("gsettings", "set", "org.gnome.desktop.interface", "cursor-size", "24"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 
