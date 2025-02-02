@@ -449,9 +449,9 @@ func main() {
 	// if err := updateOrCloneRepo("git@github.com:timmo001/nvim-config", home+"/.config/nvim"); err != nil {
 	// 	log.Fatalf("error: %v", err)
 	// }
-	if err := u.RunCmd("nvim", "+PlugInstall", "+qall"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
+	// if err := u.RunCmd("nvim", "+PlugInstall", "+qall"); err != nil {
+	// 	log.Fatalf("error: %v", err)
+	// }
 
 	// Install ascii-image-converter
 	u.PrintSeparator("ascii-image-converter")
