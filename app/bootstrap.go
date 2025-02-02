@@ -728,7 +728,8 @@ func main() {
 			log.Fatalf("error: %v", err)
 		}
 
-		u.PrintSeparator("Catppuccin Cursors")
+		// Install catppuccin cursor
+		u.PrintSeparator("Catppuccin Cursor")
 		if err := u.DownloadFile("https://github.com/catppuccin/cursors/releases/download/v1.0.2/catppuccin-mocha-dark-cursors.zip", "catppuccin-mocha-dark-cursors.zip"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
