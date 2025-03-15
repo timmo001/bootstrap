@@ -185,12 +185,6 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 
-	// Install fzf
-	u.PrintSeparator("fzf")
-	if err := u.RunCmd("rpm-ostree", "install", "fzf", "-y"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-
 	// Install bat
 	u.PrintSeparator("bat")
 	if err := u.RunCmd("rpm-ostree", "install", "bat", "-y"); err != nil {
