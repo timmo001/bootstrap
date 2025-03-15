@@ -270,24 +270,6 @@ func main() {
 	}
 	installedPackages = append(installedPackages, "zig")
 
-	// Install docker
-	if !isWSL {
-		u.PrintSeparator("Docker")
-		if forceInstall || !u.IsExecutableInstalled("docker") {
-			if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "docker"); err != nil {
-				log.Fatalf("error: %v", err)
-			}
-			installedPackages = append(installedPackages, "docker")
-		}
-
-		// Install docker compose
-		u.PrintSeparator("Docker Compose")
-		if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "docker-compose"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		installedPackages = append(installedPackages, "docker-compose")
-	}
-
 	// Enable yarn
 	u.PrintSeparator("Enabling Yarn")
 	if err := u.RunCmd("corepack", "enable", "yarn"); err != nil {
@@ -365,14 +347,6 @@ func main() {
 		}
 	}
 
-	// Install lazydocker if not installed
-	u.PrintSeparator("lazydocker")
-	if forceInstall || !u.IsExecutableInstalled("lazydocker") {
-		if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "lazydocker"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-	}
-
 	// Install nerd fonts
 	u.PrintSeparator("Nerd Fonts")
 	if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "ttf-fira-code"); err != nil {
@@ -394,22 +368,10 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 
-	// Bun
-	u.PrintSeparator("Bun")
-	if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "bun"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-
 	log.Infof("isDesktop: %v", isDesktop)
 
 	// Install desktop environment packages
 	if isDesktop {
-		// Install gnome-tweaks and gnome-shell-extensions
-		u.PrintSeparator("gnome-tweaks and gnome-shell-extensions")
-		if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "gnome-tweaks", "gnome-shell-extensions"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-
 		// Install zen browser
 		u.PrintSeparator("Zen Browser")
 		if err := u.RunCmd("flatpak", "install", "flathub", "io.github.zen_browser.zen", "-y"); err != nil {
@@ -424,41 +386,12 @@ func main() {
 			}
 		}
 
-		// Install postman
-		u.PrintSeparator("Postman")
-		if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "postman-bin"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-
 		// Install ghostty
 		u.PrintSeparator("Ghostty")
-		if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "gtk4", "libadwaita"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		installedPackages = append(installedPackages, "gtk4", "libadwaita")
-		if err := u.UpdateOrCloneRepo("https://github.com/ghostty-org/ghostty", "ghostty"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := u.RunCmdInDir("ghostty", "sudo", "zig", "build", "-p", "/usr", "-Doptimize=ReleaseFast"); err != nil {
+		if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "ghostty"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 		installedPackages = append(installedPackages, "ghostty")
-		// Set CTRL+ALT+T to open ghostty
-		if err := u.RunCmd("gsettings", "set", "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/", "name", "'Open Ghostty'"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := u.RunCmd("gsettings", "set", "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/", "binding", "'<Primary><Alt>t'"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := u.RunCmd("gsettings", "set", "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/", "command", "'/usr/bin/ghostty'"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-
-		// Install chrome
-		u.PrintSeparator("Google Chrome")
-		if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "google-chrome"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
 
 		// Install slack
 		u.PrintSeparator("Slack")
