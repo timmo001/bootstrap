@@ -9,7 +9,8 @@ import (
 func main() {
 	u.PrintSeparator("Install or update ghostty")
 
-	if err := u.RunCmd("sudo", "apt", "install", "libgtk-4-dev", "libadwaita-1-dev", "-y"); err != nil {
+	// Changed: Use pacman with Arch package names for GTK packages
+	if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "gtk4", "libadwaita"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 	if err := u.UpdateOrCloneRepo("https://github.com/ghostty-org/ghostty", "ghostty"); err != nil {
