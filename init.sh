@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 # Stop on error
 set -e
@@ -82,20 +82,7 @@ else
   source ~/.$CURRENT_SHELL"rc"
   set -e
 
-  if [ $CURRENT_SHELL != "zsh" ]; then
-    echo "Install zsh"
-    sudo apt update
-    sudo apt install -y zsh
-  fi
-
   echo "Init complete"
-fi
-
-if [ $CURRENT_SHELL != "zsh" ]; then
-  chsh -s $(which zsh)
-  sudo chsh -s $(which zsh)
-
-  echo "Please restart your terminal to switch to zsh"
 fi
 
 echo "running go mod tidy"
