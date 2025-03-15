@@ -9,7 +9,8 @@ import (
 func main() {
 	u.PrintSeparator("Install or update ghostty")
 
-	if err := u.RunCmd("sudo", "apt", "install", "libgtk-4-dev", "libadwaita-1-dev", "-y"); err != nil {
+	// Update Ubuntu-specific package names to Fedora equivalents.
+	if err := u.RunCmd("sudo", "dnf", "install", "gtk4-devel", "libadwaita-devel", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 	if err := u.UpdateOrCloneRepo("https://github.com/ghostty-org/ghostty", "ghostty"); err != nil {

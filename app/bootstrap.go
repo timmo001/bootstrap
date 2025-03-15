@@ -56,20 +56,17 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 
-	// Update apt
-	if err := u.RunCmd("sudo", "apt", "update"); err != nil {
+	if err := u.RunCmd("sudo", "dnf", "check-update"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
-	// Upgrade apt
-	u.PrintSeparator("Upgrade apt packages")
-	if err := u.RunCmd("sudo", "apt", "full-upgrade", "-y"); err != nil {
+	u.PrintSeparator("Upgrade dnf packages")
+	if err := u.RunCmd("sudo", "dnf", "upgrade", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
-	// Cleanup apt
-	u.PrintSeparator("Cleanup apt packages")
-	if err := u.RunCmd("sudo", "apt", "autoremove", "-y"); err != nil {
+	u.PrintSeparator("Cleanup dnf packages")
+	if err := u.RunCmd("sudo", "dnf", "autoremove", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
@@ -88,7 +85,7 @@ func main() {
 	// Install wget
 	u.PrintSeparator("wget")
 	if forceInstall || !u.IsExecutableInstalled("wget") {
-		if err := u.RunCmd("sudo", "apt", "install", "wget", "-y"); err != nil {
+		if err := u.RunCmd("sudo", "dnf", "install", "wget", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 		installedPackages = append(installedPackages, "wget")
@@ -97,7 +94,7 @@ func main() {
 	// Install curl
 	u.PrintSeparator("curl")
 	if forceInstall || !u.IsExecutableInstalled("curl") {
-		if err := u.RunCmd("sudo", "apt", "install", "curl", "-y"); err != nil {
+		if err := u.RunCmd("sudo", "dnf", "install", "curl", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 		installedPackages = append(installedPackages, "curl")
@@ -105,26 +102,26 @@ func main() {
 
 	// Setup flatpak and flathub
 	u.PrintSeparator("Setting up flatpak and flathub")
-	if err := u.RunCmd("sudo", "apt", "install", "flatpak", "-y"); err != nil {
+	if err := u.RunCmd("sudo", "dnf", "install", "flatpak", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 	if err := u.RunCmd("flatpak", "remote-add", "--if-not-exists", "flathub", "https://flathub.org/repo/flathub.flatpakrepo"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	if err := u.RunCmd("sudo", "apt", "install", "gnome-software-plugin-flatpak", "-y"); err != nil {
+	if err := u.RunCmd("sudo", "dnf", "install", "gnome-software-plugin-flatpak", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
-	// Install pipewire and wireplumber
+	// Install pipewire and wireplumber (Fedora packages)
 	u.PrintSeparator("pipewire and wireplumber")
-	if err := u.RunCmd("sudo", "apt", "install", "pipewire", "pipewire-audio-client-libraries", "wireplumber", "-y"); err != nil {
+	if err := u.RunCmd("sudo", "dnf", "install", "pipewire", "pipewire-alsa", "wireplumber", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
 	// Install git
 	u.PrintSeparator("git")
 	if forceInstall || !u.IsExecutableInstalled("git") {
-		if err := u.RunCmd("sudo", "apt", "install", "git", "-y"); err != nil {
+		if err := u.RunCmd("sudo", "dnf", "install", "git", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 		installedPackages = append(installedPackages, "git")
@@ -154,28 +151,10 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 
-	// Install gh
+	// Install GitHub CLI (gh) using Fedora’s repository
 	u.PrintSeparator("GitHub CLI (gh)")
 	if forceInstall || !u.IsExecutableInstalled("gh") {
-		if err := u.RunCmd("sudo", "mkdir", "-p", "-m", "775", "/etc/apt/keyrings"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := u.DownloadFile("https://cli.github.com/packages/githubcli-archive-keyring.gpg", "githubcli-archive-keyring.gpg"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := u.RunCmd("sudo", "mv", "githubcli-archive-keyring.gpg", "/etc/apt/keyrings/githubcli-archive-keyring.gpg"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := u.RunCmd("sudo", "chmod", "go+r", "/etc/apt/keyrings/githubcli-archive-keyring.gpg"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := u.RunCmd("echo", "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := u.RunCmd("sudo", "apt", "update"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := u.RunCmd("sudo", "apt", "install", "gh", "-y"); err != nil {
+		if err := u.RunCmd("sudo", "dnf", "install", "gh", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 		installedPackages = append(installedPackages, "gh")
@@ -184,7 +163,7 @@ func main() {
 	// Install stow
 	u.PrintSeparator("stow")
 	if forceInstall || !u.IsExecutableInstalled("stow") {
-		if err := u.RunCmd("sudo", "apt", "install", "stow", "-y"); err != nil {
+		if err := u.RunCmd("sudo", "dnf", "install", "stow", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 		installedPackages = append(installedPackages, "stow")
@@ -203,7 +182,7 @@ func main() {
 	// Install ruby
 	u.PrintSeparator("ruby")
 	if forceInstall || !u.IsExecutableInstalled("ruby") {
-		if err := u.RunCmd("sudo", "apt", "install", "ruby", "-y"); err != nil {
+		if err := u.RunCmd("sudo", "dnf", "install", "ruby", "ruby-devel", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 		installedPackages = append(installedPackages, "ruby")
@@ -212,7 +191,7 @@ func main() {
 	// Install zsh-autosuggestions
 	u.PrintSeparator("zsh-autosuggestions")
 	if forceInstall || !u.IsExecutableInstalled("zsh-autosuggestions") {
-		if err := u.RunCmd("sudo", "apt", "install", "zsh-autosuggestions", "-y"); err != nil {
+		if err := u.RunCmd("sudo", "dnf", "install", "zsh-autosuggestions", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 		installedPackages = append(installedPackages, "zsh-autosuggestions")
@@ -221,7 +200,7 @@ func main() {
 	// Install zsh-syntax-highlighting
 	u.PrintSeparator("zsh-syntax-highlighting")
 	if forceInstall || !u.IsExecutableInstalled("zsh-syntax-highlighting") {
-		if err := u.RunCmd("sudo", "apt", "install", "zsh-syntax-highlighting", "-y"); err != nil {
+		if err := u.RunCmd("sudo", "dnf", "install", "zsh-syntax-highlighting", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 		installedPackages = append(installedPackages, "zsh-syntax-highlighting")
@@ -307,19 +286,18 @@ func main() {
 
 	// Install python + dependencies
 	u.PrintSeparator("Python and dependencies")
-	if err := u.RunCmd("sudo", "apt", "install", "python3", "python3-dev", "-y"); err != nil {
+	if err := u.RunCmd("sudo", "dnf", "install", "python3", "python3-devel", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	if err := u.RunCmd("sudo", "apt", "install", "python3-pip", "-y"); err != nil {
+	if err := u.RunCmd("sudo", "dnf", "install", "python3-pip", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	if err := u.RunCmd("sudo", "apt", "install", "python3-venv", "-y"); err != nil {
+	if err := u.RunCmd("sudo", "dnf", "install", "python3-virtualenv", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 	if err := u.RunCmd(
-		"sudo", "apt", "install", "autoconf", "libssl-dev", "libxml2-dev", "libxslt1-dev", "libjpeg-dev", "libffi-dev",
-		"libudev-dev", "zlib1g-dev", "pkg-config", "libavformat-dev", "libavcodec-dev", "libavdevice-dev", "libavutil-dev",
-		"libswscale-dev", "libswresample-dev", "libavfilter-dev", "ffmpeg", "libgammu-dev", "-y",
+		"sudo", "dnf", "install", "autoconf", "openssl-devel", "libxml2-devel", "libxslt-devel", "libjpeg-devel", "libffi-devel",
+		"systemd-devel", "zlib-devel", "pkgconfig", "ffmpeg-free", "ffmpeg-free-devel", "gammu-devel", "-y",
 	); err != nil {
 		log.Fatalf("error: %v", err)
 	}
@@ -342,9 +320,12 @@ func main() {
 		installedPackages = append(installedPackages, "rust")
 	}
 
-	// Install zig
+	// Install zig (Fedora method)
 	u.PrintSeparator("Zig")
-	if err := u.RunCmd("sudo", "snap", "install", "zig", "--classic", "--beta"); err != nil {
+	if err := u.RunCmd("sudo", "dnf", "copr", "enable", "sentry/zig", "-y"); err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	if err := u.RunCmd("sudo", "dnf", "install", "zig", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 	installedPackages = append(installedPackages, "zig")
@@ -370,7 +351,7 @@ func main() {
 
 		// Install docker compose
 		u.PrintSeparator("Docker Compose")
-		if err := u.RunCmd("sudo", "apt", "install", "docker-compose-plugin", "-y"); err != nil {
+		if err := u.RunCmd("sudo", "dnf", "install", "docker-compose-plugin", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 		installedPackages = append(installedPackages, "docker-compose-plugin")
@@ -438,9 +419,9 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 
-	// Install neovim
+	// Install neovim (update build-essential replacement)
 	u.PrintSeparator("Neovim")
-	if err := u.RunCmd("sudo", "apt", "install", "ninja-build", "gettext", "cmake", "unzip", "curl", "build-essential", "-y"); err != nil {
+	if err := u.RunCmd("sudo", "dnf", "install", "ninja-build", "gettext", "cmake", "unzip", "curl", "gcc", "gcc-c++", "make", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 	if err := u.UpdateOrCloneRepo("git@github.com:neovim/neovim", "neovim"); err != nil {
@@ -479,19 +460,19 @@ func main() {
 
 	// Install ripgrep
 	u.PrintSeparator("ripgrep")
-	if err := u.RunCmd("sudo", "apt", "install", "ripgrep", "-y"); err != nil {
+	if err := u.RunCmd("sudo", "dnf", "install", "ripgrep", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
 	// Install fzf
 	u.PrintSeparator("fzf")
-	if err := u.RunCmd("sudo", "apt", "install", "fzf", "-y"); err != nil {
+	if err := u.RunCmd("sudo", "dnf", "install", "fzf", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
 	// Install bat
 	u.PrintSeparator("bat")
-	if err := u.RunCmd("sudo", "apt", "install", "bat", "-y"); err != nil {
+	if err := u.RunCmd("sudo", "dnf", "install", "bat", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 	if err := u.RunCmd("sudo", "ln", "-s", "/usr/bin/batcat", "/usr/bin/bat"); err != nil {
@@ -500,7 +481,7 @@ func main() {
 
 	// Install lynx
 	u.PrintSeparator("lynx")
-	if err := u.RunCmd("sudo", "apt", "install", "lynx", "-y"); err != nil {
+	if err := u.RunCmd("sudo", "dnf", "install", "lynx", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
@@ -522,10 +503,10 @@ func main() {
 
 	// Install nerd fonts
 	u.PrintSeparator("Nerd Fonts")
-	if err := u.RunCmd("sudo", "apt", "install", "fonts-firacode", "-y"); err != nil {
+	if err := u.RunCmd("sudo", "dnf", "install", "fira-code-fonts", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	if err := u.RunCmd("sudo", "apt", "install", "fonts-hack", "-y"); err != nil {
+	if err := u.RunCmd("sudo", "dnf", "install", "hack-fonts", "-y"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 	if err := u.UpdateOrCloneRepo("https://github.com/ryanoasis/nerd-fonts", "nerd-fonts"); err != nil {
@@ -562,7 +543,7 @@ func main() {
 	if isDesktop {
 		// Install gnome-tweaks and gnome-shell-extensions
 		u.PrintSeparator("gnome-tweaks and gnome-shell-extensions")
-		if err := u.RunCmd("sudo", "apt", "install", "gnome-tweaks", "gnome-shell-extensions", "-y"); err != nil {
+		if err := u.RunCmd("sudo", "dnf", "install", "gnome-tweaks", "gnome-shell-extensions", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 
@@ -575,13 +556,13 @@ func main() {
 		// Install vs*ode
 		if forceInstall || !u.IsExecutableInstalled("code") {
 			u.PrintSeparator("VS C*de")
-			if err := u.DownloadFile("https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64", "vscode.deb"); err != nil {
+			if err := u.DownloadFile("https://code.visualstudio.com/sha/download?build=stable&os=linux-rpm-x64", "vscode.rpm"); err != nil {
 				log.Fatalf("error: %v", err)
 			}
-			if err := u.RunCmd("sudo", "apt", "install", "./vscode.deb", "-y"); err != nil {
+			if err := u.RunCmd("sudo", "dnf", "install", "./vscode.rpm", "-y"); err != nil {
 				log.Fatalf("error: %v", err)
 			}
-			if err := u.DeleteFile("vscode.deb"); err != nil {
+			if err := u.DeleteFile("vscode.rpm"); err != nil {
 				log.Fatalf("error: %v", err)
 			}
 		}
@@ -609,10 +590,10 @@ func main() {
 
 		// Install ghostty
 		u.PrintSeparator("Ghostty")
-		if err := u.RunCmd("sudo", "apt", "install", "libgtk-4-dev", "libadwaita-1-dev", "-y"); err != nil {
+		if err := u.RunCmd("sudo", "dnf", "install", "gtk4-devel", "libadwaita-devel", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
-		installedPackages = append(installedPackages, "libgtk-4-dev", "libadwaita-1-dev")
+		installedPackages = append(installedPackages, "gtk4-devel", "libadwaita-devel")
 		if err := u.UpdateOrCloneRepo("https://github.com/ghostty-org/ghostty", "ghostty"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
@@ -655,19 +636,13 @@ func main() {
 
 		// Install chrome
 		u.PrintSeparator("Google Chrome")
-		if err := u.DownloadFile("https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb", "chrome.deb"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := u.RunCmd("sudo", "apt", "install", "./chrome.deb", "-y"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := u.DeleteFile("chrome.deb"); err != nil {
+		if err := u.RunCmd("sudo", "dnf", "install", "google-chrome-stable", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 
 		// Install slack
 		u.PrintSeparator("Slack")
-		if err := u.RunCmd("sudo", "snap", "install", "slack", "--classic"); err != nil {
+		if err := u.RunCmd("flatpak", "install", "flathub", "com.slack.Slack", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 
@@ -676,7 +651,7 @@ func main() {
 		if err := u.DownloadFile("https://discord.com/api/download?platform=linux&format=deb", "discord.deb"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
-		if err := u.RunCmd("sudo", "apt", "install", "./discord.deb", "-y"); err != nil {
+		if err := u.RunCmd("sudo", "dnf", "install", "./discord.deb", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 
@@ -686,7 +661,7 @@ func main() {
 			if err := u.DownloadFile("https://cdn.fastly.steamstatic.com/client/installer/steam.deb", "steam.deb"); err != nil {
 				log.Fatalf("error: %v", err)
 			}
-			if err := u.RunCmd("sudo", "apt", "install", "./steam.deb", "-y"); err != nil {
+			if err := u.RunCmd("sudo", "dnf", "install", "./steam.deb", "-y"); err != nil {
 				log.Fatalf("error: %v", err)
 			}
 			if err := u.DeleteFile("steam.deb"); err != nil {
@@ -699,7 +674,7 @@ func main() {
 		if err := u.DownloadFile("https://github.com/LizardByte/Sunshine/releases/download/v0.23.1/sunshine-ubuntu-24.04-amd64.deb", "sunshine.deb"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
-		if err := u.RunCmd("sudo", "apt", "install", "./sunshine.deb", "-y"); err != nil {
+		if err := u.RunCmd("sudo", "dnf", "install", "./sunshine.deb", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 		if err := u.DeleteFile("sunshine.deb"); err != nil {
@@ -730,7 +705,7 @@ func main() {
 
 		// Install hyprland
 		u.PrintSeparator("Hyprland")
-		if err := u.RunCmd("sudo", "apt", "install", "hyprland", "hyprland-backgrounds", "wofi", "wofi-pass", "wl-clipboard", "pseudo", "libgtk-4-dev", "waybar", "fonts-font-awesome", "clang-tidy", "gobject-introspection", "libdbusmenu-gtk3-dev", "libevdev-dev", "libfmt-dev", "libgirepository1.0-dev", "libgtk-3-dev", "libgtkmm-3.0-dev", "libinput-dev", "libjsoncpp-dev", "libmpdclient-dev", "libnl-3-dev", "libnl-genl-3-dev", "libpulse-dev", "libsigc++-2.0-dev", "libspdlog-dev", "libwayland-dev", "scdoc", "upower", "libxkbregistry-dev", "sway-notification-center", "light", "-y"); err != nil {
+		if err := u.RunCmd("sudo", "dnf", "install", "hyprland", "hyprland-backgrounds", "wofi", "wofi-pass", "wl-clipboard", "pseudo", "gtk4-devel", "waybar", "fontawesome-fonts", "clang-tools-extra", "gobject-introspection", "libdbusmenu-gtk3-devel", "libevdev-devel", "fmt-devel", "gobject-introspection-devel", "gtk3-devel", "gtkmm30-devel", "libinput-devel", "jsoncpp-devel", "libmpdclient-devel", "libnl3-devel", "libnl-genl3-devel", "pulseaudio-libs-devel", "libsigc++20-devel", "spdlog-devel", "wayland-devel", "scdoc", "upower", "xkbcommon-devel", "sway-notification-center", "light", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 
@@ -768,13 +743,13 @@ func main() {
 		if err := u.RunCmdInDir("hyprwm-contrib/grimblast", "sudo", "make", "install"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
-		if err := u.RunCmd("sudo", "apt", "install", "grim", "slurp", "-y"); err != nil {
+		if err := u.RunCmd("sudo", "dnf", "install", "grim", "slurp", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 
 		// Install swaybg
 		u.PrintSeparator("swaybg")
-		if err := u.RunCmd("sudo", "apt", "install", "swaybg", "-y"); err != nil {
+		if err := u.RunCmd("sudo", "dnf", "install", "swaybg", "-y"); err != nil {
 			log.Fatalf("error: %v", err)
 		}
 
