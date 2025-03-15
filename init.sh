@@ -84,8 +84,7 @@ else
 
   if [ $CURRENT_SHELL != "zsh" ]; then
     echo "Install zsh"
-    sudo apt update
-    sudo apt install -y zsh
+    sudo pacman -Sy --noconfirm zsh
   fi
 
   echo "Init complete"
@@ -93,8 +92,6 @@ fi
 
 if [ $CURRENT_SHELL != "zsh" ]; then
   chsh -s $(which zsh)
-  sudo chsh -s $(which zsh)
-
   echo "Please restart your terminal to switch to zsh"
 fi
 
