@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"os"
-	"strings"
 
 	"github.com/charmbracelet/log"
 
@@ -18,7 +17,6 @@ func init() {
 }
 
 func main() {
-	shell := os.Getenv("SHELL")
 	home := os.Getenv("HOME")
 
 	log.Info("Bootstrapping...")
@@ -43,12 +41,6 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 
-	// Exit if the shell is not zsh
-	u.PrintSeparator("Checking shell")
-	if !strings.Contains(shell, "zsh") {
-		log.Fatalf("Please restart your shell and run the script again in zsh to continue.")
-	}
-
 	// Install wget
 	u.PrintSeparator("wget")
 	if forceInstall || !u.IsExecutableInstalled("wget") {
@@ -65,21 +57,6 @@ func main() {
 			log.Fatalf("error: %v", err)
 		}
 		installedPackages = append(installedPackages, "curl")
-	}
-
-	// Setup flatpak and flathub
-	u.PrintSeparator("Setting up flatpak and flathub")
-	if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "flatpak"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := u.RunCmd("flatpak", "remote-add", "--if-not-exists", "flathub", "https://flathub.org/repo/flathub.flatpakrepo"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-
-	// Install pipewire and wireplumber
-	u.PrintSeparator("pipewire and wireplumber")
-	if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "pipewire", "pipewire-alsa", "pipewire-pulse", "wireplumber"); err != nil {
-		log.Fatalf("error: %v", err)
 	}
 
 	// Install git
@@ -131,16 +108,6 @@ func main() {
 			log.Fatalf("error: %v", err)
 		}
 		installedPackages = append(installedPackages, "stow")
-	}
-
-	// Setup dotfiles
-	u.PrintSeparator("Setting up dotfiles")
-	dotfilesPath := home + "/.config/dotfiles"
-	if err := u.UpdateOrCloneRepo("git@github.com:timmo001/dotfiles", dotfilesPath); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := u.RunCmdInDir(dotfilesPath, "./install.sh"); err != nil {
-		log.Fatalf("error: %v", err)
 	}
 
 	// Install ruby
@@ -293,16 +260,7 @@ func main() {
 	if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "ninja", "gettext", "cmake", "unzip", "curl", "base-devel", "neovim"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	if err := u.UpdateOrCloneRepo("git@github.com:neovim/neovim", "neovim"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := u.RunCmdInDir("neovim", "make", "CMAKE_BUILD_TYPE=Release"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := u.RunCmdInDir("neovim", "sudo", "make", "install"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := u.RunCmd("npm", "install", "-g", "neovim"); err != nil {
+  if err := u.RunCmd("npm", "install", "-g", "neovim"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
@@ -339,98 +297,10 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 
-	// Install lazygit if not installed
-	u.PrintSeparator("lazygit")
-	if forceInstall || !u.IsExecutableInstalled("lazygit") {
-		if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "lazygit"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-	}
-
-	// Install nerd fonts
-	u.PrintSeparator("Nerd Fonts")
-	if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "ttf-fira-code"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "ttf-hack"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := u.UpdateOrCloneRepo("https://github.com/ryanoasis/nerd-fonts", "nerd-fonts"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := u.RunCmdInDir("nerd-fonts", "bash", "install.sh"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := u.RunCmdInDir("nerd-fonts", "sudo", "bash", "install.sh"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := u.RunCmd("gsettings", "set", "org.gnome.desktop.interface", "monospace-font-name", "'FiraMono Nerd Font Medium 13'"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-
 	log.Infof("isDesktop: %v", isDesktop)
 
 	// Install desktop environment packages
 	if isDesktop {
-		// Install zen browser
-		u.PrintSeparator("Zen Browser")
-		if err := u.RunCmd("flatpak", "install", "flathub", "io.github.zen_browser.zen", "-y"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-
-		// Install vs*ode
-		if forceInstall || !u.IsExecutableInstalled("code") {
-			u.PrintSeparator("VS C*de")
-			if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "visual-studio-code-bin"); err != nil {
-				log.Fatalf("error: %v", err)
-			}
-		}
-
-		// Install ghostty
-		u.PrintSeparator("Ghostty")
-		if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "ghostty"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		installedPackages = append(installedPackages, "ghostty")
-
-		// Install slack
-		u.PrintSeparator("Slack")
-		if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "slack-desktop"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-
-		// Install discord
-		u.PrintSeparator("Discord")
-		if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "discord"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-
-		// Install steam
-		u.PrintSeparator("Steam")
-		if forceInstall || !u.IsExecutableInstalled("steam") {
-			if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "steam"); err != nil {
-				log.Fatalf("error: %v", err)
-			}
-		}
-
-		// Install sunshine
-		u.PrintSeparator("Sunshine")
-		if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "sunshine"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-
-		// Install moonlight
-		u.PrintSeparator("Moonlight")
-		if err := u.RunCmd("flatpak", "install", "flathub", "com.moonlight_stream.Moonlight", "-y"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-
-		// Install hyprland
-		u.PrintSeparator("Hyprland")
-		if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "hyprland", "hyprland-backgrounds", "wofi", "wofi-pass", "wl-clipboard", "pseudo", "gtk4", "waybar", "ttf-font-awesome", "clang", "gobject-introspection", "libdbusmenu-gtk3", "libevdev", "fmt", "libinput", "jsoncpp", "libmpdclient", "libnl", "libpulse", "libsigc++", "spdlog", "wayland", "scdoc", "upower", "libxkbcommon", "swaync", "light"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-
 		// Install catppuccin cursor
 		u.PrintSeparator("Catppuccin Cursor")
 		if err := u.DownloadFile("https://github.com/catppuccin/cursors/releases/download/v1.0.2/catppuccin-mocha-dark-cursors.zip", "catppuccin-mocha-dark-cursors.zip"); err != nil {
@@ -449,23 +319,6 @@ func main() {
 			log.Fatalf("error: %v", err)
 		}
 
-		// Install grimblast
-		u.PrintSeparator("Grimblast")
-		if err := u.UpdateOrCloneRepo("git@github.com:hyprwm/contrib", "hyprwm-contrib"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := u.RunCmdInDir("hyprwm-contrib/grimblast", "sudo", "make", "install"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "grim", "slurp"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-
-		// Install swaybg
-		u.PrintSeparator("swaybg")
-		if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "swaybg"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
 	}
 
 	log.Info("Bootstrapping complete.")
