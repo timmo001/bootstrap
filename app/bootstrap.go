@@ -26,8 +26,6 @@ func main() {
 	// Ask if the user is running on a desktop environment
 	u.PrintSeparator("Checking if running on a desktop environment")
 	isDesktop := true
-	email := "aidan@timmo.dev"
-	name := "Aidan Timson"
 
 	// Update system: Use pacman update for Arch
 	u.PrintSeparator("Updating system")
@@ -59,14 +57,6 @@ func main() {
 		installedPackages = append(installedPackages, "curl")
 	}
 
-	// Install git
-	u.PrintSeparator("git")
-	if forceInstall || !u.IsExecutableInstalled("git") {
-		if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "git"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		installedPackages = append(installedPackages, "git")
-	}
 	err := u.RunCmd("git", "config", "--global", "pull.rebase", "true")
 	if err != nil {
 		log.Fatalf("error: %v", err)
@@ -80,14 +70,6 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 	err = u.RunCmd("git", "config", "--global", "push.default", "current")
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	err = u.RunCmd("git", "config", "--global", "user.email", email)
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	err = u.RunCmd("git", "config", "--global", "user.name", name)
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
@@ -108,15 +90,6 @@ func main() {
 			log.Fatalf("error: %v", err)
 		}
 		installedPackages = append(installedPackages, "stow")
-	}
-
-	// Install ruby
-	u.PrintSeparator("ruby")
-	if forceInstall || !u.IsExecutableInstalled("ruby") {
-		if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "ruby"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		installedPackages = append(installedPackages, "ruby")
 	}
 
 	// Install zsh-autosuggestions
@@ -179,65 +152,6 @@ func main() {
 		log.Errorf("error: %v", err)
 	}
 
-	// Install starship
-	u.PrintSeparator("starship")
-	if forceInstall || !u.IsExecutableInstalled("starship") {
-		if err := u.RunCmd("curl", "-fsSL", "https://starship.rs/install.sh", "-o", "starship-install.sh"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := u.RunCmd("chmod", "+x", "starship-install.sh"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := u.RunCmd("./starship-install.sh", "--yes"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := u.DeleteFile("starship-install.sh"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		installedPackages = append(installedPackages, "starship")
-	}
-
-	// Install nodejs
-	u.PrintSeparator("Node.js")
-	if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "nodejs", "npm"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	if err := u.RunCmd("fnm", "install", "22"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-
-	// Install python + dependencies
-	u.PrintSeparator("Python and dependencies")
-	if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "python", "python-pip"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-
-	// Install rust
-	u.PrintSeparator("Rust")
-	if forceInstall || !u.IsExecutableInstalled("rustc") {
-		if err := u.DownloadFile("https://sh.rustup.rs", "rustup-init.sh"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := u.RunCmd("chmod", "+x", "rustup-init.sh"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := u.RunCmd("./rustup-init.sh", "-y"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		if err := u.DeleteFile("rustup-init.sh"); err != nil {
-			log.Fatalf("error: %v", err)
-		}
-		installedPackages = append(installedPackages, "rust")
-	}
-
-	// Install zig
-	u.PrintSeparator("Zig")
-	if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "zig"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	installedPackages = append(installedPackages, "zig")
-
-	// Enable yarn
 	u.PrintSeparator("Enabling Yarn")
 	if err := u.RunCmd("corepack", "enable", "yarn"); err != nil {
 		log.Errorf("error: %v", err)
@@ -249,24 +163,7 @@ func main() {
 		log.Errorf("error: %v", err)
 	}
 
-	// Install markdownlint
-	u.PrintSeparator("markdownlint")
-	if err := u.RunCmd("sudo", "gem", "install", "mdl"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-
-	// Install neovim
-	u.PrintSeparator("Neovim")
-	if err := u.RunCmd("sudo", "pacman", "-S", "--noconfirm", "--needed", "ninja", "gettext", "cmake", "unzip", "curl", "base-devel", "neovim"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
   if err := u.RunCmd("npm", "install", "-g", "neovim"); err != nil {
-		log.Fatalf("error: %v", err)
-	}
-
-	// Install ascii-image-converter
-	u.PrintSeparator("ascii-image-converter")
-	if err := u.RunCmd("go", "install", "github.com/TheZoraiz/ascii-image-converter@latest"); err != nil {
 		log.Fatalf("error: %v", err)
 	}
 
